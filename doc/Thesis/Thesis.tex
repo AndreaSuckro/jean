@@ -1,0 +1,79 @@
+% Available options:
+%
+% 10pt/11pt/12pt       Sets the default font size, passed to the report class
+% oneside/twoside       Sets the default layout type, passed to the report class
+% openright                 Recommended for the use with twoside, lets chapters
+%                                 start on the right side
+% draft                         Passed to the graphixc package
+% english/german        Determines the language for predefined texts and babel
+% utf8/latin1/ansinew  Determines the input encoding, passed to the inputenc
+%                                  package
+% subfiles                     If this option is set, the subfiles package is loaded
+% bachelor/master       The thesis type (so far only bachelor or master)
+%
+\documentclass[11pt, oneside, openright, utf8, bachelor, english, subfiles]{base/thesis}
+
+%%%%%%%%%%%%%%%%%%%%%
+%% USEFUL PACKAGES       %%
+%%%%%%%%%%%%%%%%%%%%%
+
+% tables
+%\usepackage{tabularx}      % allows tables with variable width X column
+%\usepackage{multirow}     % allows multirows in tabulars
+%\usepackage{booktabs}     % for book/paper type table rulers
+
+% other
+%\usepackage{todonotes}    % allows for todo notes throughout the document
+%\usepackage{smartref}       % simpler references
+%\usepackage{algorithm2e} % good algorithm package
+%\usepackage{tikz}              % graphics library
+%\usetikzlibrary{calc}           % remember to choose some tikz libraries
+%\usepackage{pgfplots}       % for plots
+%\usepackage{tikz-3dplot}  % 3d tikz-pictures
+%\usepackage{subcaption}   % for multiple images in one figure
+
+% to load glossaries use this
+%\usepackage[acronym, nonumberlist, nomain]{glossaries}
+%\makeglossaries
+%\loadglsentries{glossary_and_acronyms}
+
+\institute{Institute of Cognitive Science\\Intuit Data Engineering and Analytics}
+\workgroup{}
+\title{Enhanced A/B Testing}
+\author{Andrea Suckro}
+\city{Osnabrück}
+\submitdate{\today}
+\firstSupervisor{Mita Mahadevan}
+\secondSupervisor{Prof. Dr. Frank Jäkel}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+\subfile{chapters/00abstract.tex}
+\end{abstract}
+
+
+\tableofcontents
+
+\mainpart
+
+\subfile{chapters/01introduction.tex}
+\subfile{chapters/02theory.tex}
+\subfile{chapters/03method.tex}
+\subfile{chapters/04analysis.tex}
+\subfile{chapters/05discussion.tex}
+
+\appendix
+
+% lists of figures etc.
+\listoffigures
+%\listofalgorithms
+%\printglossary[title={List of Acronyms}]
+
+\bibliography{thesis_bibliography}
+
+\declaration
+
+\end{document}
