@@ -35,3 +35,7 @@ hs_err_pid*
 *.mtc1
 *.out
 *.synctex.gz
+
+#IntelliJ
+.idea/
+*.iml
