@@ -1,5 +1,5 @@
 
-%%
+%% Script for testing the other code
 close all;
 clear all;
 % reeinforcement learning sutton ,barto

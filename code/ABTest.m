@@ -99,7 +99,6 @@ for i=1:r
     else
         if(binornd(1,0.35) > 0.5)
             t2(1) = t2(1) + 1;
- 
         end
     end
   
