@@ -39,3 +39,9 @@ hs_err_pid*
 #IntelliJ
 .idea/
 *.iml
+*.asv
+code/html/*.html
+doc/Thesis/Thesis.pdf
+doc/Thesis/Thesis.rar
+doc/Thesis/Thesis.pdf
+T*.pdf

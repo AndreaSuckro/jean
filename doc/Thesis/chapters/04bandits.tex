@@ -1,8 +1,12 @@
 \documentclass[main.tex]{subfiles}
 \begin{document}
 \chapter{Bandit AB-Testing}
-The previous chapter chapter dealt with optimization concerning classical AB-Testing. The following will describe a fundamentally different approach in which there is no separation between the exploration and the exploitation phase. Basically this means that we want to already maximize our profit while gaining information about the other buckets.
-\section{Model}
-Consider the described test setup in the framework of bandit algorithms.  
-\section{}
+\section{Basic Idea}
+The previous chapter chapter dealt with optimization concerning classical AB-Testing. The following will describe a fundamentally different approach in which there is no separation between the exploration and the exploitation phase. Basically this means that we want to already maximize our profit while gaining information about the other buckets. When combining exploration and exploitation one has to chooce on each step if a known good bucket should be used again or if one invests in other unknown buckets to gain more information about their reward function. This balancing is at the core of the now described algorithms.
+
+\subsection{Bandit Algorithms in general}
+Bandit algorithms originate from Machine Learning where they serve learning agents to show sensible behavior while exploring the environment. In each time step an agent is forced to make a choice among several actions. An action will lead to a reward. The reward function for any action is not known from the beginning and the agent can only estimate the true reward function of any action by trying this action. The objective is of course to maximize the received reward over the whole experiment. The name of this class of algorithms stems from their relation to the casino slot machines. Each action can be imagined as one lever in a row of many one-armed bandits. Each machine has a hidden reward function and a player wants to maximize their earned money at the end of the evening.
+
+\subsection{Reformulating AB-Testing to Bandits}
+The scenario is not that different. We have a test scenario as described in the previous chapter. Each new user is our chance to either explore or exploit what we know about the buckets of the test. Each assignment becomes the pull on the lever. We do not know when or if at all the user's behavior will lead to the recording of an action. We will have to assign users before getting the feedback of our previous assignments which leads to a class of bandit algorithms that is concerned with delayed feedback.
 \end{document}

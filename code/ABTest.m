@@ -53,10 +53,17 @@ t2 = [1,1];
 
     function bucket = minEntropyAssign
         %calculate entropy difference for both buckets
-        t1EntDiff = abs(betaEntropy(t1(1),t1(2)) - betaEntropy(t1(1),t1(2)+1));
-        t2EntDiff = abs(betaEntropy(t2(1),t2(2)) - betaEntropy(t2(1),t2(2)+1));
+        t1m = t1;
+        t1m(2) = t1m(2) + 1;
+        funt1 = @(x) betaGreater(t1m,t2) * log(betaGreater(t1m,t2));
+        t1Ent = integral(funt1,0,1);
         
-        if t1EntDiff > t2EntDiff
+        t2m = t2;
+        t2m = t2m(2) + 1;
+        funt2 = @(x) betaGreater(t1,t2m) * log(betaGreater(t1,t2m));
+        t2Ent = integral(funt2,0,1);
+        
+        if t1Ent < t2Ent
             t1(2) = t1(2) + 1;
             bucket = 1;
         else
@@ -71,11 +78,8 @@ t2 = [1,1];
 sConf = 0;
 for i=1:r
     
-    %calculate P(t1>t2)
-    t1c = num2cell(t1);
-    t2c = num2cell(t2);
-    fun = @(x) betapdf(x,t1c{:}) .* betacdf(x,t2c{:});
-    q = integral(fun,0,1);
+    %calculate P(t1>t2) 
+    q = betaGreater(t1,t2);
     pGreater(i) = q;
     
     if (sConf == 0 && (q > 0.95 || q < 0.05))
@@ -103,16 +107,16 @@ for i=1:r
     end
   
 end
-%% plot the created distributions
-X = 0:.01:1;
-t1c = num2cell(t1);
-t2c = num2cell(t2);
-y1 = betapdf(X,t1c{:});
-y2 = betapdf(X,t2c{:});
-figure
-hold on
-plot(X,y1,'Color','r','LineWidth',2)
-plot(X,y2,'LineStyle','-.','Color','b','LineWidth',2)
-legend({'red is t1','blue is t2'},'Location','NorthEast');
-hold off
+% %% plot the created distributions
+% X = 0:.01:1;
+% t1c = num2cell(t1);
+% t2c = num2cell(t2);
+% y1 = betapdf(X,t1c{:});
+% y2 = betapdf(X,t2c{:});
+% figure
+% hold on
+% plot(X,y1,'Color','r','LineWidth',2)
+% plot(X,y2,'LineStyle','-.','Color','b','LineWidth',2)
+% legend({'red is t1','blue is t2'},'Location','NorthEast');
+% hold off
 end

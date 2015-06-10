@@ -14,7 +14,7 @@ q2 = Beta(k2+\alpha,N2-k2+\beta) & = \frac{x^{k2+\alpha-1}(1-x)^{N2-k2+\beta -1}
 So each new assignment and each new event would directly alter the distributions parameters.\textit{ Questions: What is with returning users? Or users with a high action rate? Is every user a new one?}
 What is the posterior for $P(q1>q2 | k1,N1,k,2,N2)$ - that Bucket 1 performs better than Bucket 2 given the collected data? There are in principal two different ways to get an answer.
 \begin{figure}[h]
-\includegraphics[scale=0.5]{BetaDists}
+\includegraphics[scale=0.5]{BetaDists.png}
 \centering
 \title{Different Beta Distributions}
 \end{figure}
@@ -25,9 +25,14 @@ Finding the best Bucket among the other test scenarios can be achieved in severa
 In general for two random variables $X,Y$ with corresponding probability density function $f_X,f_Y$ and cumulative density function $F_X,F_Y$ it holds: 
 \begin{align*}
 P(X \geq Y ) &= \iint_{[x>y]} f_X(x)f_Y(y) \,dy\,dx \\
-					&= \iint_{-\infty}^{x} f_X(x)f_Y(y) \,dy\,dx \\
-					&= \int_{-\infty}^{\infty}f_X(x)F_Y(x)\,dx
+			 &= \iint_{-\infty}^{x} f_X(x)f_Y(y) \,dy\,dx \\
+			 &= \int_{-\infty}^{\infty}f_X(x)F_Y(x)\,dx
 \end{align*}
+In our case with the two given buckets and the Beta Distribution that has only non-zero values in the range from 0 to 1 this formular resolves to:
+\begin{align*}
+P(q1 \geq q2 ) = \int_{0}^{1}Beta_{q1}(k1,N1-k1)I_{q2}(k2,N2-k2)\,dx
+\end{align*}
+Where $I_{q2}$ is the regularized incomplete beta function.
 In the paper "Numerical Computation of Stochastic Inequality Probabilities" the author John D. Cook uses symmetries of the distribution to arrive at a set of equations that can be used to calculate the problem recursively.
 
 \begin{align*}
@@ -80,14 +85,15 @@ Additional Buckets would not change the underlying computation but would result 
 \section{Best Assignment}
 It is not obvious what the best strategy is to assign a new user to a specific bucket. I will try to compare several intuitive approaches in this section. Interesting cases for the different strategies are: How fast does each strategy converge? What happens if there is no clear winner?
 \subsection{Uniform}
+For each new user we alternate the assignment uniformly between the buckets.
 \subsection{Random}
+The assignment is random.
 \subsection{Entropy}
-The best assignment for a not yet tracked user would be a bucket that minimizes the entropy over the different buckets. The entropy of a Beta Distribution is given by:
+The best assignment for a not yet tracked user would be a bucket that minimizes the entropy over the different buckets. The entropy of $P(q1\geq q2)$ is given by:
 \begin{align*}
-h(q) 	&= E[-ln(f(x;k,N))] \\
-		&= \int_{0}^{1} -f(x;k,N)ln(f(x;k,N))\,dx \\
-		&= ln(B(k,N)) - (k-1) \psi(k) - (N-1) \psi(N) + (k+N-2) \psi(k+N)
+h(q) 	&= \int_{X}f(x)\log f(x)dx \\
+		&= \int_{0}^{1} P(q1\geq q2)log P(q1\geq q2)dx
 \end{align*}
-Where $\psi$ is the Digamma function. One could calculate the difference from $h(q_x)$ to $h(q_x')$ where $x \in {1...n}$ number of Buckets and $q_x'$ represents the distribution with the newly assigned user and assign the user the bucket where $max(|h(q_x)-h(q_x')|)$.
+We will use the natural logarithm (result in Nit). The assignment will be given to the bucket with the lowest result.
 
 \end{document}

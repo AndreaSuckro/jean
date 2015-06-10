@@ -150,7 +150,7 @@
 
 \RequirePackage[colorlinks=false, unicode=true, pdfborder={0 0 0}]{hyperref}
 \RequirePackage{appendix} % to add appendix to toc
-
+\RequirePackage{epstopdf}
 
 \ifthenelse{\value{subfiles}=1}{\RequirePackage{subfiles}}{} % require subfiles
 
