@@ -85,9 +85,14 @@ Additional Buckets would not change the underlying computation but would result 
 \section{Best Assignment}
 It is not obvious what the best strategy is to assign a new user to a specific bucket. I will try to compare several intuitive approaches in this section. Interesting cases for the different strategies are: How fast does each strategy converge? What happens if there is no clear winner?
 \subsection{Uniform}
-For each new user we alternate the assignment uniformly between the buckets.
+For each new user we alternate the assignment uniformly between the buckets. So for two buckets the assignment alternates between bucket 1 and bucket 2.
 \subsection{Random}
-The assignment is random.
+The assignment is based on a random draw that yields the next bucket. The two methods comparison is shown in the following figure:
+\begin{figure}[ht]
+\includegraphics[scale=0.6]{AssignmentComparisonMean.png}
+\centering
+\title{Different Beta Distributions}
+\end{figure}
 \subsection{Entropy}
 The best assignment for a not yet tracked user would be a bucket that minimizes the entropy over the different buckets. The entropy of $P(q1\geq q2)$ is given by:
 \begin{align*}

@@ -6,7 +6,7 @@
 function [sConf,pGreater] = ABTest(n,r,ass)
 
 %default the number of rounds to 1000
-if nargin < 3 || ass < 0 || ass > 3
+if nargin < 3 || ass < 0 || ass > 4
     ass = 1;
 end
 %default the number of rounds to 1000
@@ -20,7 +20,6 @@ end
 
 %% Setting up the Buckets
 %The interval to sample from
-X = 0:.01:1;
 pGreater = zeros(r,1);
 
 %The buckets begin with a flat prior
@@ -54,16 +53,53 @@ t2 = [1,1];
     function bucket = minEntropyAssign
         %calculate entropy difference for both buckets
         t1m = t1;
+        t1m(1) = t1m(1) + 1;
         t1m(2) = t1m(2) + 1;
-        funt1 = @(x) betaGreater(t1m,t2) * log(betaGreater(t1m,t2));
-        t1Ent = integral(funt1,0,1);
+        
+        %leave t2 as it is
+        ent1 =  -betaGreater(t1m,t2)*log2(betaGreater(t1m,t2))-betaGreater(t2,t1m)*log2(betaGreater(t2,t1m));
         
         t2m = t2;
-        t2m = t2m(2) + 1;
-        funt2 = @(x) betaGreater(t1,t2m) * log(betaGreater(t1,t2m));
-        t2Ent = integral(funt2,0,1);
+        t2m(1) = t2m(1) + 1;
+        t2m(2) = t2m(2) + 1;
         
-        if t1Ent < t2Ent
+        ent2 = - betaGreater(t1,t2m) * log2(betaGreater(t1,t2m))- betaGreater(t2m,t1) * log2(betaGreater(t2m,t1));
+        
+        %weight entropy by click probability
+        c1 = t1(1)/t1(2);
+        c2 = t2(1)/t2(2);
+        
+        %if c1*ent1 < c2*ent2
+        if ent1 < ent2
+            t1(2) = t1(2) + 1;
+            bucket = 1;
+        else
+            t2(2) = t2(2) + 1;
+            bucket = 2;
+        end
+        
+    end
+
+    function bucket = maxDifferenceAssign
+        %calculate entropy difference for both buckets
+        t1m = t1;
+        t1m(1) = t1m(1) + 1;
+        t1m(2) = t1m(2) + 1;
+        
+        %leave t2 as it is
+        bigger1 =  betaGreater(t1m,t2);
+        
+        t2m = t2;
+        t2m(1) = t2m(1) + 1;
+        t2m(2) = t2m(2) + 1;
+        
+        bigger2 = betaGreater(t2m,t1);
+        
+        c1 = t1(1)/t1(2);
+        c2 = t2(1)/t2(2);
+        
+        %if c1*ent1 < c2*ent2
+        if abs(bigger1-0.5) > abs(bigger2-0.5)
             t1(2) = t1(2) + 1;
             bucket = 1;
         else
@@ -94,29 +130,21 @@ for i=1:r
             b = randomAssign;
         case 3
             b = minEntropyAssign;
+        case 4
+            b = maxDifferenceAssign;
     end
     
     %decide if there is a success
-    if(b == 1) && (binornd(1,0.25) > 0.5)      
-        t1(1) = t1(1) + 1;
-        
+    if(b == 1) 
+        if(binornd(1,0.55) > binornd(1,0.25))      
+            t1(1) = t1(1) + 1;
+        end
     else
-        if(binornd(1,0.35) > 0.5)
+        if(binornd(1,0.25) > binornd(1,0.55))
             t2(1) = t2(1) + 1;
         end
     end
   
 end
-% %% plot the created distributions
-% X = 0:.01:1;
-% t1c = num2cell(t1);
-% t2c = num2cell(t2);
-% y1 = betapdf(X,t1c{:});
-% y2 = betapdf(X,t2c{:});
-% figure
-% hold on
-% plot(X,y1,'Color','r','LineWidth',2)
-% plot(X,y2,'LineStyle','-.','Color','b','LineWidth',2)
-% legend({'red is t1','blue is t2'},'Location','NorthEast');
-% hold off
+
 end
