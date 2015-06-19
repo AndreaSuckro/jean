@@ -3,7 +3,7 @@
 % can later on work with up to n test cases. r specifies the number of
 % trials that should be used. ass can take the values 1,2,3 and determines
 % the bucket allocation method.
-function [sConf,pGreater] = ABTest(n,r,ass,b1,b2)
+function [sConf,pGreater,ent,T1,T2] = ABTest(n,r,ass,b1,b2)
 
 %default the number of rounds to 1000
 if nargin < 3 || ass < 0 || ass > 4
@@ -26,15 +26,16 @@ pGreater = zeros(r,1);
 t1 = [1,1];
 t2 = [1,1];
 
+T1 = zeros(2,r);
+T2 = zeros(2,r);
+
 
 %% Nested Functions for determining the new Bucket
     %This function iterates between the two buckets
     function bucket = uniformAssign
         if t1(2) > t2(2)
-            t2(2) = t2(2) + 1;
             bucket = 2;
         else
-            t1(2) = t1(2) + 1;
             bucket = 1;
         end
     end
@@ -42,42 +43,56 @@ t2 = [1,1];
     %This function uses randi to determine the next Assignment
     function bucket = randomAssign
         if round(rand) == 0
-            t2(2) = t2(2) + 1;
+            %t2(2) = t2(2) + 1;
             bucket = 2;
         else
-            t1(2) = t1(2) + 1;
+            %t1(2) = t1(2) + 1;
             bucket = 1;
         end
     end
 
-    function bucket = minEntropyAssign
-        %calculate entropy difference for both buckets
-        t1m = t1;
-        t1m(1) = t1m(1) + 1;
-        t1m(2) = t1m(2) + 1;
+    function ent = entropy(b1,b2)
+        pB1 =betaGreater(b1,b2);
+        pB2 = 1-pB1;
+        ent =  -pB1*log2(pB1)-pB2*log2(pB2);
+        
+    end
+
+    function bucket = minEntropyAssign(i)
+        
+        entro = entropy(t1,t2);
+        
+        c1 = (t1(1)+1)/(t1(1)+t1(2)+2);
+        c2 = 1-c1;
         
         %leave t2 as it is
-        ent1 =  -betaGreater(t1m,t2)*log2(betaGreater(t1m,t2))-betaGreater(t2,t1m)*log2(betaGreater(t2,t1m));
+        exp1 =  c1*entropy(t1+[1 , 0],t2) + c2*entropy(t1+[0, 1],t2);
+        %exp1 = entro-exp1;
         
-        t2m = t2;
-        t2m(1) = t2m(1) + 1;
-        t2m(2) = t2m(2) + 1;
+        c1 = (t2(1)+1)/(t2(1)+t2(2)+2);
+        c2 = 1-c1;
         
-        ent2 = - betaGreater(t1,t2m) * log2(betaGreater(t1,t2m))- betaGreater(t2m,t1) * log2(betaGreater(t2m,t1));
+        exp2 =  c1*entropy(t1,t2+[1 , 0]) + c2*entropy(t1,t2+[0, 1]);
+        %exp2 = entro-exp2;
         
-        %weight entropy by click probability
-        c1 = t1(1)/t1(2);
-        c2 = t2(1)/t2(2);
-        
-        %if c1*ent1 < c2*ent2
-        if ent1 < ent2
-            t1(2) = t1(2) + 1;
-            bucket = 1;
+        %exp1
+        %exp2
+        T=500;
+        p = exp(T*exp1)/(exp(T*exp1)+exp(T*exp2))
+        if rand > p
+           bucket = 1;
         else
-            t2(2) = t2(2) + 1;
-            bucket = 2;
+           bucket = 2;
         end
         
+%         if exp1 < exp2
+%             %t1(2) = t1(2) + 1;
+%             bucket = 1;
+%         else
+%             %t2(2) = t2(2) + 1;
+%             bucket = 2;
+%         end
+%         
     end
 
     function bucket = maxDifferenceAssign
@@ -100,10 +115,10 @@ t2 = [1,1];
         
         %if c1*ent1 < c2*ent2
         if abs(bigger1-0.5) > abs(bigger2-0.5)
-            t1(2) = t1(2) + 1;
+            %t1(2) = t1(2) + 1;
             bucket = 1;
         else
-            t2(2) = t2(2) + 1;
+            %t2(2) = t2(2) + 1;
             bucket = 2;
         end
         
@@ -118,6 +133,9 @@ for i=1:r
     q = betaGreater(t1,t2);
     pGreater(i) = q;
     
+    ent(i) =  -betaGreater(t1,t2)*log2(betaGreater(t1,t2))-betaGreater(t2,t1)*log2(betaGreater(t2,t1));
+        
+    
     if (sConf == 0 && (q > 0.95 || q < 0.05))
         sConf = i;
     end
@@ -129,21 +147,28 @@ for i=1:r
         case 2
             b = randomAssign;
         case 3
-            b = minEntropyAssign;
+            b = minEntropyAssign(i);
         case 4
             b = maxDifferenceAssign;
     end
     
     %decide if there is a success
     if(b == 1) 
-        if(binornd(1,b1) > binornd(1,b2))      
+        if(rand < b1)      
             t1(1) = t1(1) + 1;
+        else
+            t1 = t1 + [0 , 1];
         end
     else
-        if(binornd(1,b2) > binornd(1,b1))
+        if(rand < b2)
             t2(1) = t2(1) + 1;
+        else
+            t2 = t2 + [0 , 1];
         end
     end
+    
+    T1(:,i)= t1;
+    T2(:,i)= t2;
   
 end
 
