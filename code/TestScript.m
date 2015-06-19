@@ -20,16 +20,20 @@ entropyData = zeros(assignments,runs);
 differenceData = zeros(assignments,runs);
 
 parfor n = 1:runs
-    [sConf,pGreater] = ABTest(2,assignments,1);
+    
+    b1 = rand;
+    b2 = rand;
+    
+    [sConf,pGreater] = ABTest(2,assignments,1,b1,b2);
     uniformData(:,n) = pGreater;
 
-    [sConf2,pGreater2] = ABTest(2,assignments,2);
+    [sConf2,pGreater2] = ABTest(2,assignments,2,b1,b2);
     randomData(:,n) = pGreater2;
     
-    [sConf3,pGreater3] = ABTest(2,assignments,3);
+    [sConf3,pGreater3] = ABTest(2,assignments,3,b1,b2);
     entropyData(:,n) = pGreater3;
     
-    [sConf4,pGreater4] = ABTest(2,assignments,4);
+    [sConf4,pGreater4] = ABTest(2,assignments,4,b1,b2);
     differenceData(:,n) = pGreater4;
 end
 

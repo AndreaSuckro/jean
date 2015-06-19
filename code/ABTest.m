@@ -3,7 +3,7 @@
 % can later on work with up to n test cases. r specifies the number of
 % trials that should be used. ass can take the values 1,2,3 and determines
 % the bucket allocation method.
-function [sConf,pGreater] = ABTest(n,r,ass)
+function [sConf,pGreater] = ABTest(n,r,ass,b1,b2)
 
 %default the number of rounds to 1000
 if nargin < 3 || ass < 0 || ass > 4
@@ -136,11 +136,11 @@ for i=1:r
     
     %decide if there is a success
     if(b == 1) 
-        if(binornd(1,0.55) > binornd(1,0.25))      
+        if(binornd(1,b1) > binornd(1,b2))      
             t1(1) = t1(1) + 1;
         end
     else
-        if(binornd(1,0.25) > binornd(1,0.55))
+        if(binornd(1,b2) > binornd(1,b1))
             t2(1) = t2(1) + 1;
         end
     end
