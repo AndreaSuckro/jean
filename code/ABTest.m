@@ -58,68 +58,52 @@ T2 = zeros(2,r);
         
     end
 
-    function bucket = minEntropyAssign(i)
+    function bucket = minEntropyAssign()
         
-        entro = entropy(t1,t2);
         
-        c1 = (t1(1)+1)/(t1(1)+t1(2)+2);
+        c1 = (t1 + [1 , 0])/(t1(1)+t1(2)+2);
+        c2 = 1-c1;
+        
+        %leave t2 as it is
+        exp1 =  c1*entropy(t1+[1 , 0],t2) + c2*entropy(t1+[0, 1],t2);
+
+        
+        c1 = (t2 + [1 , 0])/(t2(1)+t2(2)+2);
+        c2 = 1-c1;
+        
+        exp2 =  c1*entropy(t1,t2+[1 , 0]) + c2*entropy(t1,t2+[0, 1]);
+        
+        if exp1 < exp2
+            %t1(2) = t1(2) + 1;
+            bucket = 1;
+        else
+            %t2(2) = t2(2) + 1;
+            bucket = 2;
+        end
+        
+    end
+
+    function bucket = softEntropyAssign
+        
+        c1 = (t1 + [1 , 0])/(t1(1)+t1(2)+2);
         c2 = 1-c1;
         
         %leave t2 as it is
         exp1 =  c1*entropy(t1+[1 , 0],t2) + c2*entropy(t1+[0, 1],t2);
         %exp1 = entro-exp1;
         
-        c1 = (t2(1)+1)/(t2(1)+t2(2)+2);
+        c1 = (t2 + [1 , 0])/(t2(1)+t2(2)+2);
         c2 = 1-c1;
         
         exp2 =  c1*entropy(t1,t2+[1 , 0]) + c2*entropy(t1,t2+[0, 1]);
         %exp2 = entro-exp2;
-        
-        %exp1
-        %exp2
+
         T=500;
-        p = exp(T*exp1)/(exp(T*exp1)+exp(T*exp2))
+        p = exp(T*exp1)/(exp(T*exp1)+exp(T*exp2));
         if rand > p
            bucket = 1;
         else
            bucket = 2;
-        end
-        
-%         if exp1 < exp2
-%             %t1(2) = t1(2) + 1;
-%             bucket = 1;
-%         else
-%             %t2(2) = t2(2) + 1;
-%             bucket = 2;
-%         end
-%         
-    end
-
-    function bucket = maxDifferenceAssign
-        %calculate entropy difference for both buckets
-        t1m = t1;
-        t1m(1) = t1m(1) + 1;
-        t1m(2) = t1m(2) + 1;
-        
-        %leave t2 as it is
-        bigger1 =  betaGreater(t1m,t2);
-        
-        t2m = t2;
-        t2m(1) = t2m(1) + 1;
-        t2m(2) = t2m(2) + 1;
-        
-        bigger2 = betaGreater(t2m,t1);
-        
-        c1 = t1(1)/t1(2);
-        c2 = t2(1)/t2(2);
-        
-        %if c1*ent1 < c2*ent2
-        if abs(bigger1-0.5) > abs(bigger2-0.5)
-            %t1(2) = t1(2) + 1;
-            bucket = 1;
-        else
-            %t2(2) = t2(2) + 1;
-            bucket = 2;
         end
         
     end
@@ -149,19 +133,19 @@ for i=1:r
         case 3
             b = minEntropyAssign(i);
         case 4
-            b = maxDifferenceAssign;
+            b = softEntropyAssign;
     end
     
     %decide if there is a success
     if(b == 1) 
         if(rand < b1)      
-            t1(1) = t1(1) + 1;
+            t1 = t1 + [1 , 0];
         else
             t1 = t1 + [0 , 1];
         end
     else
         if(rand < b2)
-            t2(1) = t2(1) + 1;
+            t2 = t2 + [1 , 0];
         else
             t2 = t2 + [0 , 1];
         end

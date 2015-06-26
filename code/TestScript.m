@@ -17,7 +17,7 @@ fprintf('Run Tests %d times with %d assignments...\n',runs,assignments);
 uniformData = zeros(assignments,runs);
 randomData = zeros(assignments,runs);
 entropyData = zeros(assignments,runs);
-differenceData = zeros(assignments,runs);
+softEntropyData = zeros(assignments,runs);
 
 
 
@@ -27,22 +27,22 @@ for n = 1:runs
     b1 = 0.5;
     b2 = 1;
     
-%     [sConf,pGreater,ent] = ABTest(2,assignments,1,b1,b2);
-%     uniformData(:,n) = ent;
-%     
-%     [sConf2,pGreater2,ent2] = ABTest(2,assignments,2,b1,b2);
-%     randomData(:,n) = ent2;
+    [sConf,pGreater,ent] = ABTest(2,assignments,1,b1,b2);
+    uniformData(:,n) = ent;
+    
+    [sConf2,pGreater2,ent2] = ABTest(2,assignments,2,b1,b2);
+    randomData(:,n) = ent2;
     
     [sConf3,pGreater3,ent3,T1,T2] = ABTest(2,assignments,3,b1,b2);
     entropyData(:,n) = ent3;
-    figure
-    T=[T1; T2]';
-    plot(T)
-    T(end,:)
+%     figure
+%     T=[T1; T2]';
+%     plot(T)
+%     T(end,:)
     
     
-%     [sConf4,pGreater4,ent4] = ABTest(2,assignments,4,b1,b2);
-%     differenceData(:,n) = ent4;
+    [sConf4,pGreater4,ent4] = ABTest(2,assignments,4,b1,b2);
+    softEntropyData(:,n) = ent4;
 end
 
 %% Plot the different assignment methods
@@ -113,8 +113,8 @@ ylabel('P(Bucket1>Bucket2)')
 %plot the entropy Data
 ax4 = subplot(2,2,4);
 hold on
-stdR =  std(differenceData,0,2);
-mR = mean(differenceData,2);
+stdR =  std(softEntropyData,0,2);
+mR = mean(softEntropyData,2);
 y1 = (mR + stdR)';
 y2 = (mR - stdR)';
 plot(mR)

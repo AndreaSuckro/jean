@@ -8,4 +8,12 @@ Test:
 Bucket:
 Action: A user that is assigned to a bucket may perform an action that is measured. For example - the clicking on a specific button may trigger the recording of this action. 
 Sampling Rate: The sampling rate determines what percentage of all the users participate in the test. This decision takes place before each user is assigned to a bucket.
+\section{Intuit's A/B Testing Platform}
+Users have the possibility to create test cases for their projects. By encapsulating the whole process of performing and A/B Test the users can perform tests in any area of the product. It could be centered around UI and design choices or test backend functionality.
+\subsection{Creating a Test} 
+The platform for creating the tests and measuring the metrics along the way is organized as a web service. The users built in code to their products to show the users different experiences based on their assignment that is determined by the A/B Testing service. When creating the test the users define the number of different experiences, the controll setting and how long the test should be run.
+\subsection{Running the Test}
+For any new user that is visiting the product the service determines if she is part of the experiment or not based on the sampling rate. If it is decided that she takes part in the testing the next step decides the bucket she is assigned to. The user will from now on always stay in the bucket to avoid shifting experiences from visit to visit.
+\subsection{Analyzing the Result}
+The service provides metrics and current states of the test cases throughout the testing phase. Though it is not encouraged, customers can still update their tests and for example increase the sampling rate or disable buckets.
 \end{document}
