@@ -12,6 +12,7 @@ assignments = 1000;
 
 epsGavg = zeros(assignments,runs);
 
+
 fprintf('Run Bandit Algorithms %d times with %d assignments ',runs,assignments);
 %% Calculation
 epsGreed = zeros(1,runs);

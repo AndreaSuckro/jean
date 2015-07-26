@@ -43,41 +43,36 @@ T2 = zeros(2,r);
     %This function uses randi to determine the next Assignment
     function bucket = randomAssign
         if round(rand) == 0
-            %t2(2) = t2(2) + 1;
             bucket = 2;
         else
-            %t1(2) = t1(2) + 1;
             bucket = 1;
         end
     end
 
     function ent = entropy(b1,b2)
-        pB1 =betaGreater(b1,b2);
+        pB1 = betaGreater(b1,b2);
         pB2 = 1-pB1;
-        ent =  -pB1*log2(pB1)-pB2*log2(pB2);
+        ent = -pB1*log2(pB1)-pB2*log2(pB2);
         
     end
 
-    function bucket = minEntropyAssign()
+    function bucket = minEntropyAssign
         
-        
-        c1 = (t1 + [1 , 0])/(t1(1)+t1(2)+2);
+        %calculate the case that t1 gets the assignment
+        c1 = (t1 + [1 , 0])/(t1(1)+t1(2)+1);
         c2 = 1-c1;
         
-        %leave t2 as it is
-        exp1 =  c1*entropy(t1+[1 , 0],t2) + c2*entropy(t1+[0, 1],t2);
+        exp1 =  c1*entropy(t1+[1 , 0],t2) + c2*entropy(t1+[0 , 1],t2);
 
-        
-        c1 = (t2 + [1 , 0])/(t2(1)+t2(2)+2);
+        %calculate the case that t2 gets the assignment
+        c1 = (t2 + [1 , 0])/(t2(1)+t2(2)+1);
         c2 = 1-c1;
         
-        exp2 =  c1*entropy(t1,t2+[1 , 0]) + c2*entropy(t1,t2+[0, 1]);
+        exp2 =  c1*entropy(t1,t2+[1 , 0]) + c2*entropy(t1,t2+[0 , 1]);
         
         if exp1 < exp2
-            %t1(2) = t1(2) + 1;
             bucket = 1;
         else
-            %t2(2) = t2(2) + 1;
             bucket = 2;
         end
         
@@ -85,21 +80,22 @@ T2 = zeros(2,r);
 
     function bucket = softEntropyAssign
         
-        c1 = (t1 + [1 , 0])/(t1(1)+t1(2)+2);
+        %calculate the case that t1 gets the assignment
+        c1 = (t1 + [1 , 0])/(t1(1)+t1(2)+1);
         c2 = 1-c1;
         
-        %leave t2 as it is
-        exp1 =  c1*entropy(t1+[1 , 0],t2) + c2*entropy(t1+[0, 1],t2);
-        %exp1 = entro-exp1;
+        exp1 =  c1*entropy(t1+[1 , 0],t2) + c2*entropy(t1+[0 , 1],t2);
         
-        c1 = (t2 + [1 , 0])/(t2(1)+t2(2)+2);
+        %calculate the case that t2 gets the assignment
+        c1 = (t2 + [1 , 0])/(t2(1)+t2(2)+1);
         c2 = 1-c1;
         
-        exp2 =  c1*entropy(t1,t2+[1 , 0]) + c2*entropy(t1,t2+[0, 1]);
-        %exp2 = entro-exp2;
+        exp2 =  c1*entropy(t1,t2+[1 , 0]) + c2*entropy(t1,t2+[0 , 1]);
+        
 
         T=500;
-        p = exp(T*exp1)/(exp(T*exp1)+exp(T*exp2));
+        %p = exp(T*exp1)/(exp(T*exp1)+exp(T*exp2));
+        p = exp(exp1/T)/(exp(exp1/T)+exp(exp2/T));
         if rand > p
            bucket = 1;
         else
@@ -117,8 +113,7 @@ for i=1:r
     q = betaGreater(t1,t2);
     pGreater(i) = q;
     
-    ent(i) =  -betaGreater(t1,t2)*log2(betaGreater(t1,t2))-betaGreater(t2,t1)*log2(betaGreater(t2,t1));
-        
+    ent(i) =  -q*log2(q)-betaGreater(t2,t1)*log2(betaGreater(t2,t1));    
     
     if (sConf == 0 && (q > 0.95 || q < 0.05))
         sConf = i;
@@ -131,7 +126,7 @@ for i=1:r
         case 2
             b = randomAssign;
         case 3
-            b = minEntropyAssign(i);
+            b = minEntropyAssign;
         case 4
             b = softEntropyAssign;
     end

@@ -1,19 +1,27 @@
 \documentclass[main.tex]{subfiles}
 \begin{document}
 \chapter{Introduction}
-Motivation for the project. General motivation for automated tests in the field of software development. hope for an objective criterion to make business decisions. can be applied to design measured in clickrates, can be internal process , can be ... anything that can be measured. intuit has an own framework to conduct test scenarios called abntest. it is a webservice that can be easily integrated by any product and uses http requests to measure the characteristic numbers for a test scenario.
+As computers and analytic on big sets of data become more tangible, A/B-Testing seems to become part of any online service or product. In fact by using online products like Google or Facebook it is highly likely that everyone of us has already been taking part in such an experiment and though sometimes that raises some attention \cite{arthur2014facebook} most of these tests go by unnoticed by the customer. 
+
+The term itself originates from a simplified setting where only two variants are compared but is also used to describe settings with more scenarios that are referred to as Multivariate testing in the scientific literature. Experimenters hope for a realistic feedback by directly measuring the users behavior without additional work by the customer (as compared to filling out a survey for example). The gained insight should be used to more reliably model users future behavior and to extract behavior patterns possibly unknown prior to the experiment. This procedure is not bound to user studies as experiments can be conducted on back-end algorithms as well. Intuit has an own framework to conduct such test scenarios called abntest. It is a web service that can be easily integrated by any product and uses http requests to measure the characteristic numbers for a test.
 \section{Terminology}
-certain terms will reoccur throughout the thesis and will be explained here.
-Test:
-Bucket:
-Action: A user that is assigned to a bucket may perform an action that is measured. For example - the clicking on a specific button may trigger the recording of this action. 
-Sampling Rate: The sampling rate determines what percentage of all the users participate in the test. This decision takes place before each user is assigned to a bucket.
-\section{Available Implementations}
-Users have the possibility to create test cases for their projects. By encapsulating the whole process of performing and A/B Test the users can perform tests in any area of the product. It could be centered around UI and design choices or test backend functionality.
+Certain terms are common in the framework of A/B-Testing and will therefore also appear repeatedly throughout this thesis. The following explanation will set them into context.
+\begin{description}
+\item[Test]
+A test is created by a user with a defined number of buckets. A test is active for a preset amount of time, collecting the data with a sampling rate to determine if there is a significant difference between the buckets. The sampling rate determines what percentage of all the users participate in the test. This decision takes place before each user is assigned to a bucket.
+\item[Bucket]
+A Bucket is a scenario that resides within a test. Buckets vary on a certain feature that is the discriminating factor to be measured by the overall test. This can be a new design or UI-feature, but basically it is not tied to a 'visible' change, but can also be concerned with internal mechanisms. The percentage of users that get assigned to a specific bucket can be freely administrated as long as the assignments sum up to $100\%$ .
+\item[Assignment]
+The assignment determines the experience the user will be exposed to during the test. Once determined it stays fixed.
+\item[Action]
+A user with an assignment may perform an action that is measured. For example - the clicking on a specific button may trigger a recording of this action. The accumulated actions determine the success of a bucket compared to the others. 
+\end{description}
+\section{Workflow of a Testing System}
+Users have the possibility to create test cases for their projects. By encapsulating the whole process of performing and A/B Test the users can perform tests in any area of the product. The following flow describes the different parts that are inherent to most testing platforms.
 \subsection{Creating a Test} 
-The platform for creating the tests and measuring the metrics along the way is organized as a web service. The users built in code to their products to show the users different experiences based on their assignment that is determined by the A/B Testing service. When creating the test the users define the number of different experiences, the controll setting and how long the test should be run.
+Creating the tests and measuring the metrics along the way. This is normally handled by a separate system. The users built in code to their products to show the users different experiences based on their assignment that is determined by the A/B Testing service. When creating the test the users define the number of different experiences, the control setting and how long the test should be run.
 \subsection{Running the Test}
 For any new user that is visiting the product the service determines if she is part of the experiment or not based on the sampling rate. If it is decided that she takes part in the testing the next step decides the bucket she is assigned to. The user will from now on always stay in the bucket to avoid shifting experiences from visit to visit.
 \subsection{Analyzing the Result}
-The service provides metrics and current states of the test cases throughout the testing phase. Though it is not encouraged, customers can still update their tests and for example increase the sampling rate or disable buckets.
+The service provides metrics and current states of the test cases throughout the testing phase. Though it is not encouraged, customers can still update their tests and for example increase the sampling rate or disable whole buckets, if they are not useful anymore.
 \end{document}

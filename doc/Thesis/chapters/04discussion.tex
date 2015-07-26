@@ -1,0 +1,20 @@
+\documentclass[main.tex]{subfiles}
+\begin{document}
+\chapter{Discussion}
+Although Bandit and regular A/B Testing algorithms have a lot in common they do not really solve for the same problem which makes a clear decision upon what is better very hard.
+\subsection{Truths}
+Bayesian gives subjective values based on the so far collected data
+
+\subsection{Duration of the test}
+Just comparing the duration of the test. One could argue that Bandit algorithms are useful if they keep on running in the background of a product/service and not turned of at a certain time, hence rendering the question for statistical significance useless. And since they are adapting dynamically one could react to changes occurring later in time. A good idea, but it leads also to several implications that are possibly not easy to be resolved. 
+
+Imagine a reasonable sized application or service. If testing proofs valuable an application will not just have one test running at a time. 
+
+No statistical model can compensate for a test that is not run long enough to cover different behavioral patterns of the targeted users during time. Meaning that for any useful test the cycles that are important have to be identified first (work-weekend,day-night,differences in timezone) and the duration adapted to account for those.
+
+\subsection{A reasonable prior}
+
+
+
+
+\end{document}

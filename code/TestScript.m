@@ -5,12 +5,8 @@ close all;
 clear variables;
 clear betaGreater;
 
-
-%parpool open 4
-%parpool close
-
-runs = 1;
-assignments = 300;
+runs = 500;
+assignments = 250;
 
 fprintf('Run Tests %d times with %d assignments...\n',runs,assignments);
 %% Calculation
@@ -19,13 +15,16 @@ randomData = zeros(assignments,runs);
 entropyData = zeros(assignments,runs);
 softEntropyData = zeros(assignments,runs);
 
-
-
-
-for n = 1:runs
+parfor n = 1:runs
+    %make this so props get sorted
+    b1 = rand;
+    b2 = rand;
     
-    b1 = 0.5;
-    b2 = 1;
+    if b1 > b2
+        tmp = b2;
+        b2 = b1;
+        b1 = tmp;
+    end
     
     [sConf,pGreater,ent] = ABTest(2,assignments,1,b1,b2);
     uniformData(:,n) = ent;
@@ -35,20 +34,18 @@ for n = 1:runs
     
     [sConf3,pGreater3,ent3,T1,T2] = ABTest(2,assignments,3,b1,b2);
     entropyData(:,n) = ent3;
-%     figure
-%     T=[T1; T2]';
-%     plot(T)
-%     T(end,:)
-    
-    
+
     [sConf4,pGreater4,ent4] = ABTest(2,assignments,4,b1,b2);
     softEntropyData(:,n) = ent4;
 end
 
 %% Plot the different assignment methods
 disp('Start plotting ...')
-figure
 figure('name','Comparison of Assignment Strategies')
+
+yLab = 'Entropy(P(Bucket1>Bucket2))';
+xLab = 'Assignments';
+
 %hold on;
 x = 1:1:assignments;
 X = [x,fliplr(x)];
@@ -68,8 +65,8 @@ plot(mU);
 hold off;
 title('Equal Assignment')
 legend({'std interval','avg'},'Location','NorthEast');
-xlabel('Assignments');
-ylabel('P(Bucket1>Bucket2)')
+xlabel(xLab);
+ylabel(yLab)
 
 
 %plot the random Data
@@ -88,8 +85,8 @@ plot(mR)
 hold off;
 title('Random Assignment')
 legend({'std interval','avg'},'Location','NorthEast');
-xlabel('Assignments');
-ylabel('P(Bucket1>Bucket2)')
+xlabel(xLab);
+ylabel(yLab)
 
 %plot the entropy Data
 ax3 = subplot(2,2,3);
@@ -107,8 +104,8 @@ set(h,'facealpha',.5)
 hold off;
 title('Entropy Assignment')
 legend({'std interval','avg'},'Location','NorthEast');
-xlabel('Assignments');
-ylabel('P(Bucket1>Bucket2)')
+xlabel(xLab);
+ylabel(yLab)
 
 %plot the entropy Data
 ax4 = subplot(2,2,4);
@@ -124,10 +121,10 @@ h = fill(X,Ym,[.47 .69 .19]);
 set(h,'facealpha',.5)
 
 hold off;
-title('Difference Assignment')
+title('Soft Entropy Assignment')
 legend({'std interval','avg'},'Location','NorthEast');
-xlabel('Assignments');
-ylabel('P(Bucket1>Bucket2)')
+xlabel(xLab);
+ylabel(yLab)
 
 
 

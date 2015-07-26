@@ -6,20 +6,21 @@ function prob = betaGreater(t1,t2)
     persistent lookup;
    
     %initialize lookuptable
-    if isempty(lookup)
-       disp('Start initializing table...')
-       lookup = add_slow(t1,t2,lookup);
-       disp('finished...')
-    end
-    
-
-    prob = g(t1(1),t1(2),t2(1),t2(2),lookup);
-    
-    %if the propability could not be found
-    if isempty(prob)
-       lookup = add_slow(t1,t2,lookup);
-       prob = g(t1(1),t1(2),t2(1),t2(2),lookup);
-    end
+%     if isempty(lookup)
+%        disp('Start initializing table...')
+%        lookup = add_slow(t1,t2,lookup);
+%        disp('finished...')
+%     end
+%     
+% 
+%     prob = g(t1(1),t1(2),t2(1),t2(2),lookup);
+%     
+%     %if the propability could not be found
+%     if isempty(prob)
+%        lookup = add_slow(t1,t2,lookup);
+%        prob = g(t1(1),t1(2),t2(1),t2(2),lookup);
+%     end
+    prob = get_value(t1,t2);
     
 end
 
@@ -30,12 +31,15 @@ function lookup = add_slow(t1,t2,lookup)
 end
 
 function lookup = add_table(t1,t2)
+    P = get_value(t1,t2);
+    lookup = table(t1, t2, P);
+end
+
+function prob = get_value(t1,t2)
     t1c = num2cell(t1);
     t2c = num2cell(t2);
     fun = @(x) betapdf(x,t1c{:}) .* betacdf(x,t2c{:});
     prob = integral(fun,0,1);
-    P = prob;
-    lookup = table(t1, t2, P);
 end
 
 %% LookUp in the table 
