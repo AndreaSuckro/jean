@@ -82,9 +82,33 @@ Another path is starting directly with a Gaussian distribution. Intuit uses a Ga
 The confidence interval for the conversion rate is chosen according to "Interval estimation for a binomial proportion" by Brown et al \cite{brown2001interval} the Agresti-Coull interval. This works well for buckets containing $n \geq 40$ user which is a reasonable assumption. Other interval estimations may be used leading to more conservative estimates or stricter assumptions.
 
 \subsection{Sampling}
-Another method that would be more useful for many different buckets is sampling.
+Another method that would be more useful for many different buckets is sampling. The following Figure~\ref{fig:SampleBucks} shows a a possible situation after a test run (the conversion rate is higher than realistic for illustrative purposes).
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.5]{BetaDistributions2.png}
+\title{Bucket Distributions}
+\caption[Bucket Distributions]{Beta distributions representing the Bucket performance during a test}
+\label{fig:SampleBucks}
+\end{figure}
+An algorithm for determining the best Bucket among others would look like Algorithm~\ref{alg:BetaSampling} 
+\begin{algorithm}
+\SetKwData{s}{samples}\SetKwData{num}{num}
+\SetKwArray{b}{buckets}\SetKwArray{p}{probabilities}
+\SetKwFunction{max}{maxarg}\SetKwFunction{draw}{draw}
+\KwIn{\b, \s}
+\KwOut{\p}
+\BlankLine
+\p $\leftarrow$ zeroes \;
+\For{ 1 to \s }
+{
+\num $\leftarrow$ \max{\draw{\b}} \;
+\p{\num} $\leftarrow$ \p{\num} + $\frac{1}{\s}$ \;
+}
 
-
+\caption[Sampling for best Bucket]{Use sampling for determining the best Bucket}
+\label{alg:BetaSampling}
+\end{algorithm}
+The accuracy of this method depends on the number of samples that are drawn from each Bucket.
 \subsection{Discussion}
 The generalization would again depend on the chosen method to evaluate the inequality.
 \subsubsection{Analytic}
@@ -96,7 +120,7 @@ no evaluation of the results in between p - value walk paper still there?
 wait through a few cycles, if the software users span around different time-zones, wait for the weekend etc.
 testing in two directions to avoid over confidence. really check if the approximation is justifiable for your set of data.
 \subsubsection{Sampling}
-Additional Buckets would not change the underlying computation but would result in additional draws and new means to compare. 
+
 
 \section{Best Assignment}
 From the previous section it is clear that the assignment strategy is crucial for a meaningful result of the test. But besides the fact that the assignment should not result in inhomogeneous groups it is not obvious what the best strategy is. Informative rule The following section will compare several approaches.

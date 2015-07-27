@@ -42,13 +42,30 @@ Another algorithm that is closely related is called the $\epsilon-first$ algorit
 \subsection{UCB}
 This algorithm does not explore for a fixed number of assignments, but dynamically changes the chances for not so good performing buckets to be chosen. The Hoeffding's inequality gives a confidence bound that models how sure we are about the estimated payoff across multiple plays. This way - the longer we do not play a machine the more likely it will be played in the future (but only once). The probability for each machine is defined as:
 \begin{align*}
-mean(b_n) + \sqrt{\frac{2ln(N)}{n_p(b_n)}}
+mean(b_n) + \sqrt{\frac{2\log{N}}{n_p(b_n)}}
 \end{align*}
 Here $b_n$ is one of $n$ buckets and $n_p(b_n)$ is the number of times this bucket has been played. $N$ corresponds to the number of assignments across all buckets. This algorithm requires $mean(b_n)$ to be bounded by 1 so that the confidence bound overpowers the first term. The fraction of time that is spend on exploring decreases exponentially.
+\
 
 \subsection{Thompson sampling}
-This fairly simple algorithm was originally developed by Wiliam R. Thompson in his paper "On the likelihood that one unknown probability exceeds another in view of the evidence of two samples" \cite{thompson1933likelihood}
-To determine the next bucket to be played, the buckets probability distribution itself is used.
+This fairly simple algorithm was originally developed by William R. Thompson in his paper "On the likelihood that one unknown probability exceeds another in view of the evidence of two samples" \cite{thompson1933likelihood} To determine the next bucket to be played, the buckets probability distribution itself is used.
+\begin{algorithm}
+\SetKwData{na}{nextAssignment}\SetKwData{i}{i}
+\SetKwArray{b}{buckets}\SetKwArray{d}{draws}
+\SetKwFunction{max}{maxarg}\SetKwFunction{draw}{draw}
+\KwIn{\b}
+\KwOut{\na}
+\BlankLine
+\d $\leftarrow$ zeroes \;
+\ForEach{\i in \b }
+{
+\d(\i) $\leftarrow$ \draw{\b{\i}}
+}
+\na $\leftarrow$ \max{\d} \;
+
+\caption[Thompson Sampling]{Use Thompson sampling to determine the Bucket for each Assignment}
+\label{alg:ThompsonSampling}
+\end{algorithm}
 
 They generate numbers that naturally balance between exploitation and exploration, because less performing buckets are demoted and winners promoted by the information already collected.
 
