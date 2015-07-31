@@ -25,16 +25,16 @@ P(exploration) \cdot P(\neg best machine | exploration) = \epsilon \cdot \frac{n
 \end{align*}
 times a not optimal result. A simulation with 1000 times 1000 assignments and varying $\epsilon$ gives the following plot for this algorithm:
 \begin{figure}[ht]
-\includegraphics[scale=0.5]{epsGreedy.png}
+\includegraphics[scale=0.3]{epsGreedy.png}
 \centering
 \title{Epsilon Greedy}
 \end{figure}
-An epsilon-greedy setting would still make sense, if the environment changes and users behavior change later on.
+Not that this algorithm does not track or account for the uncertainty of the estimates it has about the buckets. And since it has no 'sense' for time (the Algorithm does not change if the experiment is nearly over and only $n$ choices left) the epsilon-greedy performs equally well if the environment changes and users behavior change later on.
 
 \subsection{epsilon-first}
 Another algorithm that is closely related is called the $\epsilon-first$ algorithm. This is close to A/B-Testing since the exploration phase proceeds the exploitation phase for a finite number of steps and afterwards just exploitation happens. This would mimic the case where the tested change with the highest payoff is implemented and from then on permanently presented to all customers.
 \begin{figure}[ht]
-\includegraphics[scale=0.5]{epsFirst.png}
+\includegraphics[scale=0.3]{epsFirst.png}
 \centering
 \title{Epsilon First}
 \end{figure}
@@ -67,9 +67,9 @@ This fairly simple algorithm was originally developed by William R. Thompson in 
 \label{alg:ThompsonSampling}
 \end{algorithm}
 
-They generate numbers that naturally balance between exploitation and exploration, because less performing buckets are demoted and winners promoted by the information already collected.
+They generate numbers that naturally balance between exploitation and exploration, because less performing buckets are demoted and winners promoted by the information already collected. This method is as well resistant to changes in the environment since they 'notice' the change by playing a less performing Bucket, that will then be played more often if his performance increased.
 
 \subsection{Discussion}
-bandit algorithms are ment do be long running.
+Bandit algorithms can be very useful when they keep on running even after the experimental phase is over. In fact, since most of them distribute new users in a way that over the time most of them experience the 'better' variant, they replace the deployment cycle for new features by rolling them out slowly to the customer base.
 
 \end{document}

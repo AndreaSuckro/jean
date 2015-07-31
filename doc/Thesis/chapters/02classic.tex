@@ -2,6 +2,7 @@
 \documentclass[../Thesis.tex]{subfiles}
 \begin{document}
 \chapter{Classic AB-Testing}
+
 \section{Assumptions and Setup}
 In this section we will take a look at the common approach to A/B Testing as it is also implemented in Intuit's own framework and other available solutions. To find a common ground for comparison the problem will be abstracted and to a certain degree simplified. This leads to the following definition:
 
@@ -25,6 +26,7 @@ A/B Testing tries to find an answer to the posterior for $P(q_1>q_2 | k_1,f_1,k_
 
 \section{Best Bucket}
 Finding the best Bucket among the others can be achieved in several ways. The following methods give an overview about typical strategies that are used in different frameworks.
+
 \subsection{Analytic}
 In general for two random variables $X,Y$ with corresponding probability density function $f_X,f_Y$ and cumulative density function $F_X,F_Y$ it holds: 
 \begin{align*}
@@ -37,7 +39,6 @@ In our case with the two given buckets ($q_1,q_2$) and the Beta Distribution tha
 P(q_1 \geq q_2 ) = \int_{0}^{1}Beta_{q_1}(k_1,f_1)I_{q_2}(k_2,f_2)\,dx
 \end{align*}
 Where $I_{q_2}$ is the regularized incomplete beta function. Depending on how often this has to be calculated during the experiment, this can become costly (depending on the precision again). In the paper "Numerical Computation of Stochastic Inequality Probabilities" the author John D. Cook \cite{cook2008numerical} uses symmetries of the distribution to arrive at a set of equations that can be used to calculate the problem recursively.
-
 \begin{align*}
 g(k_1,f_1,k_2,f_2) &= P(q_1>q_2) \\
 h(k_1,f_1,k_2,f_2) &= \frac{B(k_1+k_2,f_1+f_2)}{B(k_1,f_1)B(k_2,f_2)}
@@ -108,26 +109,32 @@ An algorithm for determining the best Bucket among others would look like Algori
 \caption[Sampling for best Bucket]{Use sampling for determining the best Bucket}
 \label{alg:BetaSampling}
 \end{algorithm}
-The accuracy of this method depends on the number of samples that are drawn from each Bucket.
+The accuracy of this method depends on the number of samples that are drawn from each Bucket. A simulation in MatLab with two random generated Buckets and comparing it to the basic Analytic method described above resulted in $20.000$ draws for a two-digit exact approximation.
+
+
 \subsection{Discussion}
 The generalization would again depend on the chosen method to evaluate the inequality.
 \subsubsection{Analytic}
-Although there seems
+(Analytic discussion here)
 
 \subsubsection{Approximation}
-When applying the standard techniques of significance testing some general aspects have to kept in mind.
+When applying the standard techniques of significance testing some general aspects have to be kept in mind.
 no evaluation of the results in between p - value walk paper still there?
 wait through a few cycles, if the software users span around different time-zones, wait for the weekend etc.
 testing in two directions to avoid over confidence. really check if the approximation is justifiable for your set of data.
-\subsubsection{Sampling}
 
+\subsubsection{Sampling}
+Sampling is very easy to implement and depending on the precision can be very fast as well. It is more useful if the majority of tests have a lot of different variants that need to be compared. Once the used technology is decided, a direct test between this approach and the analytic solution should be conducted.
 
 \section{Best Assignment}
 From the previous section it is clear that the assignment strategy is crucial for a meaningful result of the test. But besides the fact that the assignment should not result in inhomogeneous groups it is not obvious what the best strategy is. Informative rule The following section will compare several approaches.
+
 \subsection{Uniform}
 For each new user we alternate the assignment uniformly between the buckets. So for two buckets the assignment alternates between bucket 1 and bucket 2.
+
 \subsection{Random}
 The assignment is based on a random draw that yields the next bucket.
+
 \subsection{Entropy}
 Another approach one could think of is distributing the assignments in a way that they minimize the entropy of the inequality across buckets. This makes sense because the desired state at the end of the experiment starting from $P(q_1\geq q_2)=P(q_2\geq q_1)=0.5$ - a high entropy, should be changed to $P(q_1\geq q_2)\ll P(q_2\geq q_1) \lor P(q_2\geq q_1)\ll P(q_1\geq q_2)$ - a low entropy. The entropy of $P(q_1\geq q_2)$ is given by:
 \begin{align*}
@@ -143,13 +150,15 @@ The expected entropy with the assignment given to the first bucket can then be c
 E(H(q_1*,q_2)) = w_1\cdot E(q_1^+,q_2) + w_2\cdot E(q_1^-,q_2)
 \end{align*}
 where $q_1^+$ assumes the user to click and $q_1^-$ not. The formulas for the second Bucket can be calculated accordingly. When $E(H(q_1*,q_2)) < E(H(q_1,q_2*))$ the next assignment goes to the first bucket.
+
 \subsection{Soft Entropy}
-But there is a problem with the before described method. It becomes clear when 
+But there is a problem with the before described method. When comparing it's performance with the Random and Uniform assignments Figure~\ref{fig:AssignmentComp} it performance worse. This effect is appears because the described algorithm optimizes greedily. It start off with a small offset between the Buckets and keeps on focusing on them without trying the other Bucket. What can be done to correct this behavior? Different solutions are possible. The used one in this implementation was adding a Soft-Max Algorithm to the Entropy Assignment to allow for small deviations from the rule.
 \begin{figure}[ht]
 \includegraphics[scale=0.7]{ComparisonAssignments.png}
 \centering
 \title{Comparison of Assignment Strategies}
 \caption{Comparison of Assignment Strategies}
+\label{fig:AssignmentComp}
 \end{figure}
 \subsection{Discussion}
 Yeah!

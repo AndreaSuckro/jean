@@ -35,10 +35,12 @@ for i=1:runs
         end
         
     end
+    
     %get previous reward if applicable
     if i > 1
         indBef = i - 1;
     end
+    
     totalReward(i) = totalReward(indBef) + reward;
     avgReward(i) = 1/i*(reward + indBef*avgReward(indBef));
     choices(i) = choice;

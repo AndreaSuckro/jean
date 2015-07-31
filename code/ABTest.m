@@ -1,22 +1,19 @@
 %%AB-Testing 
-% This script will contain the basics for a 2 cases test. The function
-% can later on work with up to n test cases. r specifies the number of
-% trials that should be used. ass can take the values 1,2,3 and determines
-% the bucket allocation method.
-function [sConf,pGreater,ent,T1,T2] = ABTest(n,r,ass,b1,b2)
+% This script will contain the basics for a 2 cases test. 
+% r specifies the number of trials that should be used. ass can 
+% take the values 1,2,3,4 and determines the bucket allocation method.
+function [sConf,pGreater,ent,T1,T2] = ABTest(r,ass,b1,b2)
 
 %default the number of rounds to 1000
-if nargin < 3 || ass < 0 || ass > 4
+if nargin < 2 || ass < 0 || ass > 4
     ass = 1;
 end
+
 %default the number of rounds to 1000
-if nargin < 2 || r < 0
+if nargin < 1 || r < 0
     r =   1000;
 end
-%if there are no buckets given default to 2
-if nargin < 1 || n < 2
-    n =   2;
-end
+
 
 %% Setting up the Buckets
 %The interval to sample from

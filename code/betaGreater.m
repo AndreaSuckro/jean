@@ -24,7 +24,15 @@ function prob = betaGreater(t1,t2)
     
 end
 
-%% Init the old way without symmetries.
+%% Init the old way without symmetries and datastructure
+function prob = get_value(t1,t2)
+    t1c = num2cell(t1);
+    t2c = num2cell(t2);
+    fun = @(x) betapdf(x,t1c{:}) .* betacdf(x,t2c{:});
+    prob = integral(fun,0,1);
+end
+
+%% LookUp in the table 
 function lookup = add_slow(t1,t2,lookup)
    %fprintf('Calc missing probability for  TestA %d %d, TestB %d %d \n\n',t1(1),t1(2),t2(1),t2(2));
    lookup = [lookup; add_table(t1, t2)];
@@ -35,14 +43,6 @@ function lookup = add_table(t1,t2)
     lookup = table(t1, t2, P);
 end
 
-function prob = get_value(t1,t2)
-    t1c = num2cell(t1);
-    t2c = num2cell(t2);
-    fun = @(x) betapdf(x,t1c{:}) .* betacdf(x,t2c{:});
-    prob = integral(fun,0,1);
-end
-
-%% LookUp in the table 
 function prob = g(a,b,c,d,lookup)
     % using existing probability
     rows = ...
@@ -56,7 +56,7 @@ end
 
 %% Algorithms form the Cook paper
 function h = H(a,b,c,d)
-    %TODO: implement
+    %TODO: implementation is taking up to much space
     h = 0;
 end
 

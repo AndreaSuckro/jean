@@ -1,4 +1,5 @@
 %% Script for testing sampling
+% This is described in chapter 2.2.3
 close all;
 clear variables;
 
@@ -18,7 +19,7 @@ disp(['Bucket1 values: ' mat2str([success1,failure1])])
 disp(['Bucket2 values: ' mat2str([success2,failure2])])
 
 %% Simulation
-numSamp = 50;
+numSamp = 20000;
 sampRes = zeros(1,2);
 for i = 1:numSamp
     if betarnd(success1,failure1) > betarnd(success2,failure2)
@@ -31,7 +32,10 @@ end
 b1 = sampRes(1)/numSamp;
 b2 = sampRes(2)/numSamp;
 disp(['Probability that bucket 1 is better: ' num2str(b1)])
+disp(['Analytic Probability for that: ' num2str(betaGreater([success1,failure1],[success2,failure2]))])
+
 disp(['Probability that bucket 2 is better: ' num2str(b2)])
+disp(['Analytic Probability for that: ' num2str(betaGreater([success2,failure2],[success1,failure1]))])
 
 %% Plot the Buckets Distribution
 figure
