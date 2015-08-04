@@ -12,8 +12,8 @@ NewEstimate \leftarrow OldEstimate + StepSize[Target - OldEstimate]
 \end{align*}
 A K-armed bandit problem is defined by random variables $X_{i,n}$ for $1 \leq i \leq K$ and $n\geq1$ where each $i$ is the index of a slot machine. Successive plays of machine i yield reward $X_{i,1},X_{i,2},...$ which are independent and identically distributed according to an unknown law with unknown expectation $\mu_i$. The machines are also independent.
 
-\subsection{Reformulating AB-Testing to Bandits}
-Each new user is our chance to either explore or exploit what we know about the buckets of the test. Each assignment becomes the pull on a lever. Since we only measure each user once, the assignments are independent and identically distributed. We deal with a stationary environment which means our $StepSize$ is $\frac{1}{k}$ where $k$ denotes the number of assignments. Since we use no prior knowledge there is also \emph{no side information}. 
+\subsection{Reformulating A/B-Testing to Bandits}
+Each new user is our chance to either explore or exploit what we know about the buckets of the test. Each assignment becomes the pull on a lever. Since we only measure each user once, the assignments are independent and identically distributed. We deal with a stationary environment which means our $StepSize$ is $\frac{1}{k}$ where $k$ denotes the number of assignments. Since we use no prior knowledge there is also no \emph{side information}. The reward does not differ among the different levers. It is always $1$, although it could be in fact another fixed value. Later on described algorithms do sometimes require the reward of a lever to be bounded by a certain interval. For the sake of A/B-Testing the concrete value should not matter and can be adapted as seen fit- it only has to be the same for each Bucket. 
 \subsubsection{Terms}
 We want to find the real distributions underlying the variations we made in the buckets. Assume this distributions to be of the form $P_B(y|w)$ where $w$ are the unknown parameters that describe the distribution. By assigning users we generate random observations $D_B=(y_1,y_2..y_t)$.
 
@@ -40,11 +40,11 @@ Another algorithm that is closely related is called the $\epsilon-first$ algorit
 \end{figure}
 
 \subsection{UCB}
-This algorithm does not explore for a fixed number of assignments, but dynamically changes the chances for not so good performing buckets to be chosen. The Hoeffding's inequality gives a confidence bound that models how sure we are about the estimated payoff across multiple plays. This way - the longer we do not play a machine the more likely it will be played in the future (but only once). The probability for each machine is defined as:
+This algorithm does not explore for a fixed number of assignments, but dynamically changes the chances for not so good performing buckets to be chosen. The Hoeffding's inequality gives a confidence bound that models how sure we are about the estimated payoff across multiple plays. This way - the longer we do not play a machine the more likely it will be played in the future (but only once). The choosing probability for each machine is defined as:
 \begin{align*}
 mean(b_n) + \sqrt{\frac{2\log{N}}{n_p(b_n)}}
 \end{align*}
-Here $b_n$ is one of $n$ buckets and $n_p(b_n)$ is the number of times this bucket has been played. $N$ corresponds to the number of assignments across all buckets. This algorithm requires $mean(b_n)$ to be bounded by 1 so that the confidence bound overpowers the first term. The fraction of time that is spend on exploring decreases exponentially.
+Here $b_n$ is one of $n$ buckets and $n_p(b_n)$ is the number of times this bucket has been played. $N$ corresponds to the number of assignments across all buckets. This algorithm requires $mean(b_n)$ to be bounded by 1 so that the confidence bound overpowers the first term. This is given by our assumption that the concrete value of the individual rewards does not matter as long as they are the same across Buckets. The fraction of time that is spend on exploring decreases exponentially.
 \
 
 \subsection{Thompson sampling}

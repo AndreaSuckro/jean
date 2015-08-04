@@ -4,7 +4,7 @@
 function avgReward = EpsilonGreedy(epsi,runs,m_a,m_b)
 
 
-avgReward = zeros(2,1);
+avgReward = zeros(1,runs);
 totalReward = zeros(1,runs);
 choices = zeros(1,runs);
 

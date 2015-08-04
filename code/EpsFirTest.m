@@ -1,5 +1,5 @@
 
-%% Script for testing the other code
+%% Script for testing the Epsilon First Algorithm
 clc;
 close all;
 clear variables;

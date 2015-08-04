@@ -1,5 +1,6 @@
 
-%% Script for testing the other code
+%% Script for testing Epsilon Greedy Algorithm
+
 clc;
 close all;
 clear variables;
@@ -11,7 +12,6 @@ runs = 1000;
 assignments = 1000;
 
 epsGavg = zeros(assignments,runs);
-
 
 fprintf('Run Bandit Algorithms %d times with %d assignments ',runs,assignments);
 %% Calculation

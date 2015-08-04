@@ -32,7 +32,9 @@ function prob = get_value(t1,t2)
     prob = integral(fun,0,1);
 end
 
-%% LookUp in the table 
+%% LookUp in the table
+% this implements and easy lookup for just saving already calculated 
+% values
 function lookup = add_slow(t1,t2,lookup)
    %fprintf('Calc missing probability for  TestA %d %d, TestB %d %d \n\n',t1(1),t1(2),t2(1),t2(2));
    lookup = [lookup; add_table(t1, t2)];
@@ -55,9 +57,10 @@ function prob = g(a,b,c,d,lookup)
 end
 
 %% Algorithms form the Cook paper
+% this can unfortunatly not take up enough values on
+% a regular laptop
 function h = H(a,b,c,d)
     %TODO: implementation is taking up to much space
-    h = 0;
 end
 
 function init(r,lookup)
