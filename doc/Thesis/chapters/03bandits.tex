@@ -27,7 +27,8 @@ times a not optimal result. A simulation with 1000 times 1000 assignments and va
 \begin{figure}[ht]
 \includegraphics[scale=0.3]{epsGreedy.png}
 \centering
-\title{Epsilon Greedy}
+\caption{Epsilon Greedy}
+\label{fig:EpsGreedy}
 \end{figure}
 Not that this algorithm does not track or account for the uncertainty of the estimates it has about the buckets. And since it has no 'sense' for time (the Algorithm does not change if the experiment is nearly over and only $n$ choices left) the epsilon-greedy performs equally well if the environment changes and users behavior change later on.
 
@@ -36,40 +37,58 @@ Another algorithm that is closely related is called the $\epsilon-first$ algorit
 \begin{figure}[ht]
 \includegraphics[scale=0.3]{epsFirst.png}
 \centering
-\title{Epsilon First}
+\caption{Epsilon First}
+\label{fig:EpsiFir}
 \end{figure}
 
 \subsection{UCB}
-This algorithm does not explore for a fixed number of assignments, but dynamically changes the chances for not so good performing buckets to be chosen. The Hoeffding's inequality gives a confidence bound that models how sure we are about the estimated payoff across multiple plays. This way - the longer we do not play a machine the more likely it will be played in the future (but only once). The choosing probability for each machine is defined as:
+The concrete formulas in this section are taken from ``Finite-time analysis of the multiarmed bandit problem'' by Auer~et~al.\,\cite{auer2002finite}, but the algorithm itself is known across the community. UCB does not explore for a fixed number of assignments, but dynamically changes the chances for not so good performing buckets to be chosen. The Hoeffding's inequality gives a confidence bound that models how sure we are about the estimated payoff across multiple plays. This way - the longer we do not play a machine the more likely it will be played in the future (but only once). We choose to play the next machine that maximizes:
 \begin{align*}
 mean(b_n) + \sqrt{\frac{2\log{N}}{n_p(b_n)}}
 \end{align*}
 Here $b_n$ is one of $n$ buckets and $n_p(b_n)$ is the number of times this bucket has been played. $N$ corresponds to the number of assignments across all buckets. This algorithm requires $mean(b_n)$ to be bounded by 1 so that the confidence bound overpowers the first term. This is given by our assumption that the concrete value of the individual rewards does not matter as long as they are the same across Buckets. The fraction of time that is spend on exploring decreases exponentially.
-\
+
 
 \subsection{Thompson sampling}
-This fairly simple algorithm was originally developed by William R. Thompson in his paper "On the likelihood that one unknown probability exceeds another in view of the evidence of two samples" \cite{thompson1933likelihood} To determine the next bucket to be played, the buckets probability distribution itself is used.
+This fairly simple algorithm was originally developed by William R. Thompson in his paper ``On the likelihood that one unknown probability exceeds another in view of the evidence of two samples''~\cite{thompson1933likelihood} To determine the next bucket to be played, the buckets probability distribution itself is used. The result of that sampling is used to update the Buckets underlying distribution as described in the previous chapter.
+
 \begin{algorithm}
-\SetKwData{na}{nextAssignment}\SetKwData{i}{i}
+\SetKwData{nb}{nextBucket}\SetKwData{nbs}{nextBucketSuccess}\SetKwData{i}{i}\SetKwData{r}{rew}
+\SetKwData{nbf}{nextBucketFailures}
 \SetKwArray{b}{buckets}\SetKwArray{d}{draws}
-\SetKwFunction{max}{maxarg}\SetKwFunction{draw}{draw}
+\SetKwFunction{max}{maxarg}\SetKwFunction{draw}{draw}\SetKwFunction{rw}{reward}
 \KwIn{\b}
-\KwOut{\na}
+%\KwOut{\na}
 \BlankLine
 \d $\leftarrow$ zeroes \;
 \ForEach{\i in \b }
 {
 \d(\i) $\leftarrow$ \draw{\b{\i}}
 }
-\na $\leftarrow$ \max{\d} \;
+\nb $\leftarrow$ \max{\d} \;
+\r = \rw{\nb}\;
+\eIf{\r == 1}{
+\nbs $\leftarrow$ \nbs + 1\;
+}{
+\nbf $\leftarrow$ \nbf + 1\;
+}
 
-\caption[Thompson Sampling]{Use Thompson sampling to determine the Bucket for each Assignment}
+\caption[Thompson Sampling]{The usage of Thompson sampling}
 \label{alg:ThompsonSampling}
 \end{algorithm}
 
-They generate numbers that naturally balance between exploitation and exploration, because less performing buckets are demoted and winners promoted by the information already collected. This method is as well resistant to changes in the environment since they 'notice' the change by playing a less performing Bucket, that will then be played more often if his performance increased.
+They generate numbers that naturally balance between exploitation and exploration, because less performing buckets are demoted and winners promoted by the information already collected. This method is as well resistant to changes in the environment since they 'notice' the change by playing a less performing Bucket, that will then be played more often if his performance increased. A comparison between Thompson Sampling and the above described UCB-Algortihm can be found in \ref{fig:ThompsonVsUCB}. Here the UCB is weaker in the first part of Assignments but slightly outperforms the Thompson Sampling in the long run. 
+
+\begin{figure}[ht]
+\includegraphics[scale=0.6]{ThompsonVsUCB.png}
+\centering
+\caption{Comparison for Thompson and UCB}
+\label{fig:ThompsonVsUCB}
+\end{figure}
 
 \subsection{Discussion}
+The section started with a very weak Bandit algorithm: epsilon-greedy. The major drawback on that was the fact that the exploration phase did not adapt to the won insights of the different Buckets. UCB and Thompson Sampling are better in this regard, which is why their overall payoff is higher in the end. 
+
 Bandit algorithms can be very useful when they keep on running even after the experimental phase is over. In fact, since most of them distribute new users in a way that over the time most of them experience the 'better' variant, they replace the deployment cycle for new features by rolling them out slowly to the customer base.
 
 \end{document}

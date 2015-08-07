@@ -11,7 +11,6 @@ end
 %% Running the test
 rewards = zeros(2,r);
 machPlays = [0,0];
-cumReward = 0;
 
 avgReward = zeros(1,r);
 totalReward = zeros(1,r);
@@ -34,8 +33,6 @@ for i = 1:r
         rewards(2,i) = rew;
         choice = 2;
     end
-    
-    cumReward = cumReward + rew;
     
     %get previous reward if applicable
     if i > 1
