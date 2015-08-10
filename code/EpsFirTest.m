@@ -7,32 +7,30 @@ clear variables;
 %parpool open 4
 %parpool close
 
-runs = 1000;
-assignments = 1000;
+runs = 2000;
+assignments = 2000;
 
 epsFavg = zeros(assignments,runs);
 
 
 fprintf('Run Bandit Algorithms %d times with %d assignments ',runs,assignments);
 %% Calculation
-epsGreed = zeros(1,runs);
-mu_aSum = 0;
-mu_bSum = 0;
 
 parfor n = 1:runs
-    mu_a = 2 + (randn);
-    mu_aSum = mu_aSum+mu_a;
-    mu_b = 2 + (randn);
-    mu_bSum = mu_bSum+mu_b;
-    epsFavg(:,n) = EpsilonFirst(0.2,assignments,mu_a,mu_b);
-    epsFavg2(:,n) = EpsilonFirst(0.1,assignments,mu_a,mu_b);
-    epsFavg3(:,n) = EpsilonFirst(0.05,assignments,mu_a,mu_b);
-    epsFavg4(:,n) = EpsilonFirst(0.025,assignments,mu_a,mu_b);
+    params = randi(50,2);
+    b1 = [params(1), params(3)];
+    b2 = [params(2),params(4)];
+    epsFavg(:,n) = EpsilonFirst(0.2,assignments,b1,b2);
+    epsFavg2(:,n) = EpsilonFirst(0.1,assignments,b1,b2);
+    epsFavg3(:,n) = EpsilonFirst(0.05,assignments,b1,b2);
+    epsFavg4(:,n) = EpsilonFirst(0.025,assignments,b1,b2);
 end
 
 %% Plot 
 disp('Start plotting ...')
 figure('name','Epsilon Greedy Algorithm')
+set(gca,'FontSize',11)
+
 %hold on;
 x = 1:1:assignments;
 hold on
@@ -47,13 +45,10 @@ plot(mU2);
 plot(mU3);
 plot(mU4);
 hold off;
-title('Epsilon Greedy Strategy')
-legend({'e = 0.2','e = 0.1','e = 0.05','e = 0.025'},'Location','SouthEast');
-xlabel('Assignments');
-ylabel('Average Reward')
+title('Epsilon First Strategy','FontSize',14)
+legend({'e = 0.2','e = 0.1','e = 0.05','e = 0.025'},'Location','SouthEast','FontSize',11);
+xlabel('Assignments','FontSize',14);
+ylabel('Average Reward','FontSize',14);
 
-%ylim([2.35 2.56])
-
-fprintf('Average mean of Bucket A = %d and of Bucket B = %d \n',mu_aSum/runs,mu_bSum/runs)
 
 

@@ -25,7 +25,7 @@ P(exploration) \cdot P(\neg best machine | exploration) = \epsilon \cdot \frac{n
 \end{align*}
 times a not optimal result. A simulation with 1000 times 1000 assignments and varying $\epsilon$ gives the following plot for this algorithm:
 \begin{figure}[ht]
-\includegraphics[scale=0.3]{epsGreedy.png}
+\includegraphics[scale=0.6]{epsGreedy.png}
 \centering
 \caption{Epsilon Greedy}
 \label{fig:EpsGreedy}
@@ -35,7 +35,7 @@ Not that this algorithm does not track or account for the uncertainty of the est
 \subsection{epsilon-first}
 Another algorithm that is closely related is called the $\epsilon-first$ algorithm. This is close to A/B-Testing since the exploration phase proceeds the exploitation phase for a finite number of steps and afterwards just exploitation happens. This would mimic the case where the tested change with the highest payoff is implemented and from then on permanently presented to all customers.
 \begin{figure}[ht]
-\includegraphics[scale=0.3]{epsFirst.png}
+\includegraphics[scale=0.6]{epsFirst.png}
 \centering
 \caption{Epsilon First}
 \label{fig:EpsiFir}
@@ -82,7 +82,7 @@ They generate numbers that naturally balance between exploitation and exploratio
 \begin{figure}[ht]
 \includegraphics[scale=0.6]{ThompsonVsUCB.png}
 \centering
-\caption{Comparison for Thompson and UCB}
+\caption{Comparison for Thompson and UCB. The graph averages $1000$ runs with random bucket distributions.}
 \label{fig:ThompsonVsUCB}
 \end{figure}
 

@@ -38,7 +38,7 @@ In our case with the two given buckets ($q_1,q_2$) and the Beta Distribution tha
 \begin{align*}
 P(q_1 \geq q_2 ) = \int_{0}^{1}Beta_{q_1}(k_1,f_1)I_{q_2}(k_2,f_2)\,dx
 \end{align*}
-Where $I_{q_2}$ is the regularized incomplete beta function. Depending on how often this has to be calculated during the experiment, this can become costly (depending on the precision again). In the paper "Numerical Computation of Stochastic Inequality Probabilities" the author John D. Cook \cite{cook2008numerical} uses symmetries of the distribution to arrive at a set of equations that can be used to calculate the problem recursively.
+Where $I_{q_2}$ is the regularized incomplete beta function. In the paper "Numerical Computation of Stochastic Inequality Probabilities" the author John D. Cook \cite{cook2008numerical} uses symmetries of the distribution to arrive at a set of equations that can be used to calculate the problem recursively.
 \begin{align*}
 g(k_1,f_1,k_2,f_2) &= P(q_1>q_2) \\
 h(k_1,f_1,k_2,f_2) &= \frac{B(k_1+k_2,f_1+f_2)}{B(k_1,f_1)B(k_2,f_2)}
@@ -115,7 +115,8 @@ The accuracy of this method depends on the number of samples that are drawn from
 \subsection{Discussion}
 The generalization would again depend on the chosen method to evaluate the inequality.
 \subsubsection{Analytic}
-(Analytic discussion here)
+Although this is the most exact calculation for comparing the Buckets the analytic approach may not be chosen depending on the performance footprint it has on the application.
+
 
 \subsubsection{Approximation}
 When applying the standard techniques of significance testing some general aspects have to be kept in mind.
@@ -127,10 +128,10 @@ testing in two directions to avoid over confidence. really check if the approxim
 Sampling is very easy to implement and depending on the precision can be very fast as well. It is more useful if the majority of tests have a lot of different variants that need to be compared. Once the used technology is decided, a direct test between this approach and the analytic solution should be conducted.
 
 \section{Best Assignment}
-From the previous section it is clear that the assignment strategy is crucial for a meaningful result of the test. But besides the fact that the assignment should not result in inhomogeneous groups it is not obvious what the best strategy is. Informative rule The following section will compare several approaches.
+From the previous section it is clear that the assignment strategy is crucial for a meaningful result of the test. But besides the fact that the assignment should not result in inhomogeneous groups it is not obvious what the overall best strategy is. In the following section several approaches will be described and evaluated against each other.
 
-\subsection{Uniform}
-For each new user we alternate the assignment uniformly between the buckets. So for two buckets the assignment alternates between bucket 1 and bucket 2.
+\subsection{Equal}
+For each new user we alternate the assignment equally between the buckets. That means that very bad performing Buckets are chosen as often as very well performing ones.
 
 \subsection{Random}
 The assignment is based on a random draw that yields the next bucket.
@@ -162,5 +163,5 @@ But there is a problem with the before described method. When comparing it's per
 \label{fig:AssignmentComp}
 \end{figure}
 \subsection{Discussion}
-Entropy not so awesome - maybe better with more buckets.
+Algorithm depend on number of Buckets and number of users? In the 2 Bucket scenario not to much of a different. Local minima to be avoided especially when starting the experiment on a weekend etc. cycles in the user behavior depend on factors outside of the experiment.
 \end{document}
