@@ -5,11 +5,8 @@ clc;
 close all;
 clear variables;
 
-%parpool open 4
-%parpool close
-
-runs = 2000;
-assignments = 2000;
+runs = 1000;
+assignments = 1000;
 
 epsGavg = zeros(assignments,runs);
 

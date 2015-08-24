@@ -91,7 +91,7 @@ Another method that would be more useful for many different buckets is sampling.
 \caption[Bucket Distributions]{Beta distributions representing the Bucket performance during a test}
 \label{fig:SampleBucks}
 \end{figure}
-An algorithm for determining the best Bucket among others would look like Algorithm~\ref{alg:BetaSampling} 
+An algorithm for determining the best Bucket among others would look like Algorithm~\ref{alg:BetaSampling}.
 \begin{algorithm}
 \SetKwData{s}{samples}\SetKwData{num}{num}
 \SetKwArray{b}{buckets}\SetKwArray{p}{probabilities}
@@ -113,10 +113,9 @@ The accuracy of this method depends on the number of samples that are drawn from
 
 
 \subsection{Discussion}
-The generalization would again depend on the chosen method to evaluate the inequality.
+The generalization of the described methods would again depend on the chosen method to evaluate the inequality.
 \subsubsection{Analytic}
-Although this is the most exact calculation for comparing the Buckets the analytic approach may not be chosen depending on the performance footprint it has on the application.
-
+Although this is the most exact calculation for comparing the Buckets the analytic approach may not be chosen depending on the performance footprint it has on the application. Compared to the normal approximation it is still superior since it proposes less restrictions on the problem and is less complicated in its application.
 
 \subsubsection{Approximation}
 When applying the standard techniques of significance testing some general aspects have to be kept in mind.
@@ -156,12 +155,13 @@ where $q_1^+$ assumes the user to click and $q_1^-$ not. The formulas for the se
 But there is a problem with the before described method. When comparing it's performance with the Random and Uniform assignments Figure~\ref{fig:AssignmentComp} it performance worse. This effect is appears because the described algorithm optimizes greedily. It start off with a small offset between the Buckets and keeps on focusing on them without trying the other Bucket. What can be done to correct this behavior? Different solutions are possible. The used one in this implementation was adding a Soft-Max Algorithm to the Entropy Assignment to allow for small deviations from the rule.
 \begin{figure}[ht]
 \hfuzz=10cm
-\includegraphics[scale=0.7]{ComparisonAssignments.png}
+\includegraphics[scale=0.8]{ComparisonAssignments.png}
 \centering
 \title{Comparison of Assignment Strategies}
 \caption{Comparison of Assignment Strategies}
+The plots show the performance of the different Assignment strategies for randomized Buckets. The Entropy is used as a measurement of how sure we get over the number of Assignments that one Bucket is better/worse than the other.
 \label{fig:AssignmentComp}
 \end{figure}
 \subsection{Discussion}
-Algorithm depend on number of Buckets and number of users? In the 2 Bucket scenario not to much of a different. Local minima to be avoided especially when starting the experiment on a weekend etc. cycles in the user behavior depend on factors outside of the experiment.
+The used Algorithms for the Bucket Assignment seem not to differ that much for a two Bucket Test. In principal it is important that the chosen method is not sensitive to temporary differences in the users behavior. These differences could occur on a weekend, day/night or other cycles in the user behavior depend on factors outside of the experiment.
 \end{document}

@@ -16,7 +16,7 @@ m(2,:) = betarnd(b2(1),b2(2),runs,1);
 
 for i=1:runs
     
-    %determin if exploration or exploitation
+    %determine if exploration or exploitation
     x = rand;
     indBef = 1;
     

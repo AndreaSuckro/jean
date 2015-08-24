@@ -13,36 +13,35 @@ NewEstimate \leftarrow OldEstimate + StepSize[Target - OldEstimate]
 A K-armed bandit problem is defined by random variables $X_{i,n}$ for $1 \leq i \leq K$ and $n\geq1$ where each $i$ is the index of a slot machine. Successive plays of machine i yield reward $X_{i,1},X_{i,2},...$ which are independent and identically distributed according to an unknown law with unknown expectation $\mu_i$. The machines are also independent.
 
 \subsection{Reformulating A/B-Testing to Bandits}
-Each new user is our chance to either explore or exploit what we know about the buckets of the test. Each assignment becomes the pull on a lever. Since we only measure each user once, the assignments are independent and identically distributed. We deal with a stationary environment which means our $StepSize$ is $\frac{1}{k}$ where $k$ denotes the number of assignments. Since we use no prior knowledge there is also no \emph{side information}. The reward does not differ among the different levers. It is always $1$, although it could be in fact another fixed value. Later on described algorithms do sometimes require the reward of a lever to be bounded by a certain interval. For the sake of A/B-Testing the concrete value should not matter and can be adapted as seen fit- it only has to be the same for each Bucket. 
-\subsubsection{Terms}
-We want to find the real distributions underlying the variations we made in the buckets. Assume this distributions to be of the form $P_B(y|w)$ where $w$ are the unknown parameters that describe the distribution. By assigning users we generate random observations $D_B=(y_1,y_2..y_t)$.
+Each new user is our chance to either explore or exploit what we know about the buckets of the test. Each assignment becomes the pull on a lever. Since we only measure each user once, the assignments are independent and identically distributed. We deal with a stationary environment which means our $StepSize$ is $\frac{1}{k}$ where $k$ denotes the number of assignments. Since we use no prior knowledge there is also no \emph{side information}. The reward value does not differ among the different levers. It is always $1$, although it could be in fact another fixed value. Later on described algorithms do sometimes require the reward of a lever to be bounded by a certain interval. For the sake of A/B-Testing the concrete value should not matter and can be adapted as seen fit- it only has to be the same for each Bucket. What does differ though is the real distributions underlying the variations we made in the buckets. Assume this distributions to be of the form $P_B(y|w)$ where $w$ are the unknown parameters that describe the distribution. By assigning users we generate random observations $D_B=(y_1,y_2..y_t)$. These observations are used to estimate the difference between the Buckets. The experiment ends after a given number of trials - this number is called \emph{horizon}.
 
 \section{Bandit algorithms}
 \subsection{epsilon-greedy}
-One of the simplest algorithms exploits always the best performing bucket (with the highest conversion rate) except for $\epsilon $'s fraction of cases where the next bucket is chosen uniformly. For example: if $\epsilon = 0.1$ every tenth assignment would not be to the best performing bucket. This also means that even after convergence for the bucket probabilities $10\%$ of the assignments would not always hit the optimal bucket. For $n$ buckets this would be:
+One of the simplest algorithms exploits always the best performing bucket (with the highest conversion rate) except for $\epsilon $'s fraction of cases where the next bucket is chosen uniformly. For example: if $\epsilon = 0.1$ every tenth assignment would not necessarily be to the best performing bucket. This also means that even after convergence for the bucket probabilities $10\%$ of the assignments would not always hit the optimal bucket. For $n$ buckets this would be:
 \begin{align*}
 P(exploration) \cdot P(\neg best machine | exploration) = \epsilon \cdot \frac{n-1}{n}
 \end{align*}
-times a not optimal result. A simulation with 1000 times 1000 assignments and varying $\epsilon$ gives the following plot for this algorithm:
+times a not optimal result. A simulation with $1000$ tests with a horizon of $1000$ and varying $\epsilon$ gives the following plot for this algorithm:
 \begin{figure}[ht]
 \includegraphics[scale=0.6]{epsGreedy.png}
 \centering
 \caption{Epsilon Greedy}
 \label{fig:EpsGreedy}
 \end{figure}
-Not that this algorithm does not track or account for the uncertainty of the estimates it has about the buckets. And since it has no 'sense' for time (the Algorithm does not change if the experiment is nearly over and only $n$ choices left) the epsilon-greedy performs equally well if the environment changes and users behavior change later on.
+Note that this algorithm does not track or account for the uncertainty of the estimates it has about the buckets. And since it has no 'sense' for time (the Algorithm does not change if the experiment is nearly over and only $n$ choices left) the epsilon-greedy performs equally well if the environment changes and users behavior change later on.
 
 \subsection{epsilon-first}
-Another algorithm that is closely related is called the $\epsilon-first$ algorithm. This is close to A/B-Testing since the exploration phase proceeds the exploitation phase for a finite number of steps and afterwards just exploitation happens. This would mimic the case where the tested change with the highest payoff is implemented and from then on permanently presented to all customers.
+Another algorithm that is closely related is called the $\epsilon-first$ algorithm. This is close to A/B-Testing since the exploration phase proceeds the exploitation phase for a finite number of steps and afterwards just exploits. This mimics the case where the tested change with the highest payoff is implemented and from then on permanently presented to all customers.
 \begin{figure}[ht]
 \includegraphics[scale=0.6]{epsFirst.png}
 \centering
 \caption{Epsilon First}
 \label{fig:EpsiFir}
 \end{figure}
+Since the implementation is fixed after $\epsilon$ steps this algorithm can not react to changes that later on happen to the environment.
 
 \subsection{UCB}
-The concrete formulas in this section are taken from ``Finite-time analysis of the multiarmed bandit problem'' by Auer~et~al.\,\cite{auer2002finite}, but the algorithm itself is known across the community. UCB does not explore for a fixed number of assignments, but dynamically changes the chances for not so good performing buckets to be chosen. The Hoeffding's inequality gives a confidence bound that models how sure we are about the estimated payoff across multiple plays. This way - the longer we do not play a machine the more likely it will be played in the future (but only once). We choose to play the next machine that maximizes:
+The concrete formulas in this section are taken from ``Finite-time analysis of the multiarmed bandit problem'' by Auer~et~al.\,\cite{auer2002finite}, but the algorithm itself is known across the community. UCB (which stands for \emph{Uniform Confidence Bound}) does not explore for a fixed number of assignments, but dynamically changes the chances for not so good performing buckets to be chosen. The Hoeffding's inequality gives a confidence bound that models how sure we are about the estimated payoff across multiple plays. This way - the longer we do not play a machine the more likely it will be played in the future (but only once). We choose to play the next machine that maximizes:
 \begin{align*}
 mean(b_n) + \sqrt{\frac{2\log{N}}{n_p(b_n)}}
 \end{align*}
@@ -77,17 +76,20 @@ This fairly simple algorithm was originally developed by William R. Thompson in 
 \label{alg:ThompsonSampling}
 \end{algorithm}
 
-They generate numbers that naturally balance between exploitation and exploration, because less performing buckets are demoted and winners promoted by the information already collected. This method is as well resistant to changes in the environment since they 'notice' the change by playing a less performing Bucket, that will then be played more often if his performance increased. A comparison between Thompson Sampling and the above described UCB-Algortihm can be found in \ref{fig:ThompsonVsUCB}. Here the UCB is weaker in the first part of Assignments but slightly outperforms the Thompson Sampling in the long run. 
+They generate numbers that naturally balance between exploitation and exploration, because less performing buckets are demoted and winners promoted by the information already collected. This method is as well resistant to changes in the environment since they 'notice' the change by playing a less performing Bucket, that will then be played more often if its performance increased. A comparison between Thompson Sampling and the above described UCB-Algortihm can be found in \ref{fig:ThompsonVsUCB}. Here the UCB is weaker in the first part of Assignments but slightly outperforms the Thompson Sampling in the long run. A paper that is taking a look at the general performance of Thompson sampling versus UCB for more arms is ``An empirical evaluation of thompson sampling'' by Chapelle and Li \cite{chapelle2011empirical}. They show that in the general case Thompson sampling outperforms UCB.
 
 \begin{figure}[ht]
 \includegraphics[scale=0.6]{ThompsonVsUCB.png}
 \centering
-\caption{Comparison for Thompson and UCB. The graph averages $1000$ runs with random bucket distributions.}
+\caption{Comparison for Thompson and UCB}
+The graph averages $1000$ runs with random bucket distributions and a horizon of 1000.
 \label{fig:ThompsonVsUCB}
 \end{figure}
 
 \subsection{Discussion}
-The section started with a very weak Bandit algorithm: epsilon-greedy. The major drawback on that was the fact that the exploration phase did not adapt to the won insights of the different Buckets. UCB and Thompson Sampling are better in this regard, which is why their overall payoff is higher in the end. 
+The section started with a very weak Bandit algorithm: epsilon-greedy. The major drawback on that was the fact that the exploration phase did not adapt to the won insights of the different Buckets. But still: for this simplified scenario it works well. This is due to the fact that only two Buckets are compared and that their rewards do not change throughout the experiment.
+
+UCB and Thompson Sampling are stronger Algorithms in the way, that they account for changes in the Users behavior and their exploration phase is dynamically bound to the information that are collected during the Experiment.
 
 Bandit algorithms can be very useful when they keep on running even after the experimental phase is over. In fact, since most of them distribute new users in a way that over the time most of them experience the 'better' variant, they replace the deployment cycle for new features by rolling them out slowly to the customer base.
 

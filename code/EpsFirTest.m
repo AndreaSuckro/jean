@@ -4,11 +4,8 @@ clc;
 close all;
 clear variables;
 
-%parpool open 4
-%parpool close
-
-runs = 2000;
-assignments = 2000;
+runs = 1000;
+assignments = 1000;
 
 epsFavg = zeros(assignments,runs);
 
@@ -19,11 +16,11 @@ fprintf('Run Bandit Algorithms %d times with %d assignments ',runs,assignments);
 parfor n = 1:runs
     params = randi(50,2);
     b1 = [params(1), params(3)];
-    b2 = [params(2),params(4)];
-    epsFavg(:,n) = EpsilonFirst(0.2,assignments,b1,b2);
+    b2 = [params(2), params(4)];
+    epsFavg(:,n) = EpsilonFirst(0.05,assignments,b1,b2);
     epsFavg2(:,n) = EpsilonFirst(0.1,assignments,b1,b2);
-    epsFavg3(:,n) = EpsilonFirst(0.05,assignments,b1,b2);
-    epsFavg4(:,n) = EpsilonFirst(0.025,assignments,b1,b2);
+    epsFavg3(:,n) = EpsilonFirst(0.2,assignments,b1,b2);
+    epsFavg4(:,n) = EpsilonFirst(0.5,assignments,b1,b2);
 end
 
 %% Plot 
@@ -46,7 +43,7 @@ plot(mU3);
 plot(mU4);
 hold off;
 title('Epsilon First Strategy','FontSize',14)
-legend({'e = 0.2','e = 0.1','e = 0.05','e = 0.025'},'Location','SouthEast','FontSize',11);
+legend({'e = 0.1','e = 0.2','e = 0.5','e = 0.8'},'Location','SouthEast','FontSize',11);
 xlabel('Assignments','FontSize',14);
 ylabel('Average Reward','FontSize',14);
 

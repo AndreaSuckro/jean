@@ -8,8 +8,8 @@ clear variables;
 %parpool open 4
 %parpool close
 
-runs = 2000;
-assignments = 2000;
+runs = 100;
+assignments = 4000;
 
 
 fprintf('Run Bandit Algorithms %d times with %d assignments ',runs,assignments);
@@ -29,7 +29,7 @@ name = 'Thompson Sampling vs. UCB';
 parfor n = 1:runs
     params = randi(50,2)
     b1 = [params(1), params(3)];
-    b2 = [params(2),params(4)];
+    b2 = [params(2), params(4)];
     [avgReward(:,n),~,~] = UCB(assignments,b1,b2);
     avgReward2(:,n) = Thompson(assignments,b1,b2);
 end
