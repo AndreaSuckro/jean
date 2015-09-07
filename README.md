@@ -11,6 +11,7 @@ the doc is LaTeX, but for convenience a pdf output of the code can be found in t
   - [x] add the Analytic Section to Best Bucket
   - [ ] finish final Discussion section
   - [x] find missing citations
+  - [ ] add IDEA logo to cover page?
 - [ ] Code
   - [x] why is UCB/Thompson worse than Eps-First/Greedy?
   - [x] standardize used parameters for Bandit Algorithms 
