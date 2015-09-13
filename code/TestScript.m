@@ -1,5 +1,6 @@
 
-%% Script for testing the other code
+%% Script for testing classical A/B Testing
+% clear workspace and setup parameters
 clc;
 close all;
 clear variables;
@@ -9,23 +10,26 @@ runs = 500;
 assignments = 250;
 
 fprintf('Run Tests %d times with %d assignments...\n',runs,assignments);
-%% Calculation
+
 uniformData = zeros(assignments,runs);
 randomData = zeros(assignments,runs);
 entropyData = zeros(assignments,runs);
 softEntropyData = zeros(assignments,runs);
 
+%% Calculation
 parfor n = 1:runs
-    %make this so props get sorted
+    %generate random buckets
     b1 = rand;
     b2 = rand;
     
+    %sort the buckets so that b2 is always 'better'
     if b1 > b2
         tmp = b2;
         b2 = b1;
         b1 = tmp;
     end
     
+    %store data for each assignment method
     [sConf,pGreater,ent] = ABTest(2,assignments,1,b1,b2);
     uniformData(:,n) = ent;
     
@@ -46,12 +50,11 @@ figure('name','Comparison of Assignment Strategies')
 yLab = 'Entropy(P(Bucket1>Bucket2))';
 xLab = 'Assignments';
 
-%hold on;
 x = 1:1:assignments;
 X = [x,fliplr(x)];
-
 ax1 = subplot(2,2,1);
 hold on
+
 %plot the uniform Data
 stdU =  std(uniformData,0,2);
 mU = mean(uniformData,2);
@@ -125,8 +128,6 @@ title('Soft Entropy Assignment')
 legend({'std interval','avg'},'Location','NorthEast');
 xlabel(xLab);
 ylabel(yLab)
-
-
 
 linkaxes([ax1,ax2,ax3,ax4],'xy')
 ylim([0 1])

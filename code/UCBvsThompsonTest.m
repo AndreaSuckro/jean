@@ -1,25 +1,21 @@
 
-%% Script for testing UCB Algorithm
+%% Script for testing UCB vs Thompson Algorithm
 
+%clearing workspace and assigning variables
 clc;
 close all;
 clear variables;
 
-%parpool open 4
-%parpool close
-
 runs = 100;
 assignments = 4000;
 
-
-fprintf('Run Bandit Algorithms %d times with %d assignments ',runs,assignments);
+fprintf('Run UCB vs. Thompson Algorithms %d times with %d assignments ',runs,assignments);
 %% Calculation
 epsGreed = zeros(1,runs);
 mu_aSum = 0;
 mu_bSum = 0;
 avgReward = zeros(assignments,runs);
 avgReward2 = zeros(assignments,runs);
-
 
 choices = zeros(assignments,runs);
 
@@ -36,16 +32,17 @@ end
 %% Plot 
 disp('Start plotting ...')
 figure('name',name)
-%hold on;
 x = 1:1:assignments;
 hold on
-% plot the uniform Data
+
+% plot UCB and Thompson generated data
 mU_ucb = mean(avgReward,2);
 mU_thom = mean(avgReward2,2);
 
-plot(mU_ucb);
+plot(mU_ucb)
 plot(mU_thom)
 hold off;
+
 title(name)
 legend({'UCB','Thompson'},'Location','SouthEast');
 xlabel('Assignments');

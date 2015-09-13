@@ -1,6 +1,6 @@
 %% Bandit Algorithm UCB
 % This function implements the Uniform Confidence Bounds algorithm
-% for the Assignment strategy of an A/B-Test
+% for the assignment strategy of an bandit A/B-Test
 function [avgReward,rewards,choices] = UCB(r,b1,b2)
 
 %default the number of rounds to 1000
@@ -8,7 +8,7 @@ if nargin < 1 || r < 0
     r =   1000;
 end
 
-%% Running the test
+%allocate the reward 
 rewards = zeros(2,r);
 machPlays = [0,0];
 
@@ -16,9 +16,10 @@ avgReward = zeros(1,r);
 totalReward = zeros(1,r);
 choices = zeros(1,r);
 
-%Play the machines
+%% Running the test
 indMin1 = 1;
 for i = 1:r
+    
     meanEst1 = mean(rewards(1,1:i)) + sqrt(2*log(i)/machPlays(1)); 
     meanEst2 = mean(rewards(2,1:i)) + sqrt(2*log(i)/machPlays(2));
     

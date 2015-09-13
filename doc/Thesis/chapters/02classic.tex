@@ -3,7 +3,7 @@
 \begin{document}
 \chapter{Classic A/B Testing}
 
-\section{Assumptions and Setup}
+\section{Assumptions and Setup}\label{sec:setup}
 This section will take a look at the common approach to A/B Testing as it is also implemented in jabba and other available solutions. To find a common ground for comparison the problem will be abstracted and to a certain degree simplified. This leads to the following definition:
 
 A given test consists of two buckets: Bucket 1 and Bucket 2. Users assigned to Bucket 1 generate actions with a probability $q_1$, for Bucket 2 this probability is $q_2$. The prior distribution for all $q$ is a beta distribution $B(\alpha,\beta)$. This is a convenient choice because it is the conjugate family for the binomial likelihood. 
@@ -150,7 +150,11 @@ E(H(q_1^*,q_2)) = w_1\cdot E(q_1^+,q_2) + w_2\cdot E(q_1^-,q_2)
 where $q_1^+$ assumes the user to click and $q_1^-$ not. The formulas for the second bucket can be calculated accordingly. When $E(H(q_1^*,q_2)) < E(H(q_1,q_2^*))$ the next assignment goes to the first bucket. The results of this method can be found in Figure~\ref{fig:AssignmentComp}.
 
 \subsection{Soft Entropy}
-But there is a problem with the before described method. When comparing its performance with the random and uniform assignments (Figure~\ref{fig:AssignmentComp}) it performs worse. This effect appears because the described entropy algorithm optimizes greedily. It starts off with a small offset between the buckets and keeps on focusing on them without trying the other bucket. Different solutions to this situation are possible. The used one in this implementation was adding a softmax algorithm to the entropy assignment allowing for small deviations from the general rule of taking the bucket with the highest entropy decrease.
+But there is a problem with the before described method. When comparing its performance with the random and uniform assignments (see Figure~\ref{fig:AssignmentComp}) it performs worse. This effect appears because the described entropy algorithm optimizes greedily. It starts off with a small offset between the buckets and keeps on focusing on them without trying the other bucket. Different solutions to this situation are possible. The used one in this implementation was adding a softmax algorithm as described in Sutton and Barto's chapter ``Softmax Action Selection''~\cite{sutton1998reinforcement} to the entropy assignment.
+\begin{align*}
+p(q_1) = \frac{e^{\frac{H(q_1^*,q_2)}{T}}}{e^{\frac{H(q_1^*,q_2)}{T}}+e^{\frac{H(q_1,q_2^*)}{T}}}
+\end{align*}
+The parameter $T$ called temperature modulates how strong differences between $H(q_1^*,q_2)$ and $H(q_1,q_2^*)$ shall be weighted when calculating the probability that the next assignment goes to Bucket 1 ($p(q_1)$). A high temperature can therefore be used to make the selection of a bucket with higher estimated entropy more likely.
 \begin{figure}[ht]
 \hfuzz=10cm
 \includegraphics[scale=0.8]{ComparisonAssignments.png}
