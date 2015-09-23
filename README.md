@@ -7,15 +7,12 @@ the doc is LaTeX, but for convenience a pdf output of the code can be found in t
 
 ##ToDo's
 - [ ] Thesis
-  - [x] improve Discussion section on Assignments
+  - [ ] improve pseudo code for Thompson?
   - [x] add the Analytic Section to Best Bucket
-  - [ ] finish final Discussion section
+  - [x] finish final Discussion section
   - [x] find missing citations
-  - [ ] add IDEA logo to cover page?
-- [ ] Code
-  - [x] why is UCB/Thompson worse than Eps-First/Greedy?
-  - [x] standardize used parameters for Bandit Algorithms 
-  - [ ] remove duplicate code for figure configuration
-  - [ ] document all the code
-  
+  - [ ] collect style feedback
+- [ ] Organizational
+  - [ ] get USB-Sticks
+  - [ ] print in OS
 
