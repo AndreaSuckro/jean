@@ -15,7 +15,6 @@ m(2,:) = betarnd(b2(1),b2(2),runs,1);
 
 pickedRewards = zeros(2,1);
 
-
 for i=1:runs
     
     %determine if exploration or exploitation
